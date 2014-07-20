@@ -11,6 +11,7 @@ module.exports = {
   attributes: {
   	id: 'integer',
   	name: 'string',
+    passwd: 'string',
   	desc: 'text'
   }
 

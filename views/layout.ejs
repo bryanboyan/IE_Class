@@ -45,36 +45,66 @@
       global scripts load
       jquery scripts must be loaded before bootstrap scripts
     -->
-    <script type="text/javascript" src='./js/jquery-2.0.3.min.js'></script>
-    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script src='/js/jquery-2.0.3.min.js'></script>
+    <script src="/js/bootstrap.min.js"></script>
 
   </head>
 
   <body>
+		
+		<script type="text/javascript">
+		// $(document).ready(function() {
+		// 	console.log($.cookie('isTeacher'));
+		// });
+		
+		function readCookie(name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for (var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+			}
+			return null;
+		}
+		</script>
 
 		<div class="container">
 		    <!-- top menu bar -->
 		    <nav class="navbar navbar-default" role="navigation">
 		      <div class="container-fluid">
 		        <div class="navbar-header">
-		          <button type="button" class="navbar-toggle" 
+		          <!-- <button type="button" class="navbar-toggle"
 		            data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 		            <span class="sr-only">Toggle navigation</span>
 		            <span class="icon-bar"></span>
 		            <span class="icon-bar"></span>
 		            <span class="icon-bar"></span>
-		          </button>
-		          <a class="navbar-brand" href="#">Infinity Education</a>
+		          </button> -->
+		          <a class="navbar-brand" href="/">Infinity Education</a>
+			        <ul class="nav navbar-nav">
+			          <li><a href="/class">Class</a></li>
+			          <li><a href="/teacher">Teacher</a></li>
+			          <li><a href="/student">Student</a></li>
+			          <li><a href="/student"><script type="text/javascript">
+			          	document.write(readCookie('isTeacher'));
+			          </script></a></li>
+			        </ul>
 		        </div>
 		      </div>
+					
+					<button onclick="alert(readCookie('isTeacher'))" value="MecliekMe">clickMe</button>
 
-		      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		        <ul class="nav navbar-nav">
-		          <li><a href="/class">Class</a></li>
-		          <li><a href="/teacher">Teacher</a></li>
-		          <li><a href="/student">Student</a></li>
-		        </ul>
-		      </div>
+		      <!-- <div class="collapse navbar-default" role="navigation">
+						<div class="container-fluid">
+							<a class="navbar-brand" href="/">Infinity Education</a>
+			        <ul class="nav navbar-nav">
+			          <li><a href="/class">Class</a></li>
+			          <li><a href="/teacher">Teacher</a></li>
+			          <li><a href="/student">Student</a></li>
+			        </ul>
+						</div>
+		      </div> -->
 		    </nav>
 		</div> <!-- container	-->
 		

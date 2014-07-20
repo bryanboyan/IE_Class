@@ -15,6 +15,8 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var crypto = require('crypto');
+
 module.exports = {
     
   index: function(req, res) {
@@ -23,7 +25,12 @@ module.exports = {
   		console.log('LoginController > welcome, user not login');
       return res.redirect('/login');
   	}
-  	res.view('home/index', {
+
+    // 根据isTeacher来判断返回什么界面.
+    var viewPage = req.session.isTeacher ? 'home/index' : 'student/my_page';
+    sails.log.info('viewPage is '+viewPage);
+
+  	res.view(viewPage, {
       user: user
     });
   },
@@ -35,14 +42,61 @@ module.exports = {
   },
 
   doLogin: function(req, res) {
-  	var user = req.param('user');
-  	var pw = req.param('pw');
+    var msgPref = 'LoginController > doLogin : ';
+
+    var username = req.param('user');
+    var pw = req.param('pw');
+
+    if (!username && !pw) {
+      sails.log.error(msgPref+'username or pw required');
+      return res.view('account/login', {
+        err: "username or pw required",
+        layout: false
+      });
+    }
+
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(pw);
+    var encoded_pw = md5sum.digest('hex');
+
     var isTeacher = req.param('teacher');
     isTeacher = !!isTeacher;
   	
   	// verify
-    sails.log.info('user is '+user+', pw is '+pw+', and is teacher?:'+isTeacher);
-    res.redirect('/login');
+    sails.log.info('user is '+username+', pw is '+JSON.stringify(pw)+', and is teacher?:'+isTeacher);
+
+    var stored_pw;
+    var _User = isTeacher ? Teacher : Student;
+    _User.findOne({name: username}).done(function(err, user) {
+      if (err) {
+        sails.log.error(msgPref+'find user error');
+      }
+
+      if (!user) {
+        sails.log.error(msgPref+'user not found');
+        return res.view('account/login', {
+          err: "user not found",
+          layout: false
+        });
+      }
+
+      stored_pw = user.passwd;
+      if (encoded_pw !== stored_pw) {
+
+        sails.log.error('LoginController > doLogin : password wrong, encoded_pw:'+encoded_pw+', stored_pw:'+stored_pw);
+        // password wrong
+        return res.view('account/login', {
+          err: "username or password wrong",
+          layout: false
+        });
+      }
+
+      req.session.user = username;    // establish session
+      req.session.isTeacher = isTeacher;
+      res.cookie('isTeacher', isTeacher);
+
+      res.redirect('/');
+    });
   },
 
   logout: function(req, res) {
