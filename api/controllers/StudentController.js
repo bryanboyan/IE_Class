@@ -17,7 +17,19 @@
 
 module.exports = {
     
-  
+  myPage: function(req, res) {
+    var name = req.session.name;
+
+    if (!name) {
+
+    }
+
+    Student.findOne({name: name}).done(function(err, student) {
+      res.view('student/my_page', {
+        stu: student
+      });
+    });
+  },
 
 
   /**

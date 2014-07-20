@@ -20,8 +20,8 @@ var crypto = require('crypto');
 module.exports = {
     
   index: function(req, res) {
-  	var user = req.session.user;
-  	if (!user) {
+  	var name = req.session.name;
+  	if (!name) {
   		console.log('LoginController > welcome, user not login');
       return res.redirect('/login');
   	}
@@ -31,7 +31,7 @@ module.exports = {
     sails.log.info('viewPage is '+viewPage);
 
   	res.view(viewPage, {
-      user: user
+      name: name
     });
   },
 
@@ -91,7 +91,7 @@ module.exports = {
         });
       }
 
-      req.session.user = username;    // establish session
+      req.session.name = username;    // establish session
       req.session.isTeacher = isTeacher;
       res.cookie('isTeacher', isTeacher);
 
@@ -100,11 +100,11 @@ module.exports = {
   },
 
   logout: function(req, res) {
-  	var user = req.session.user;
-  	if (!user) {
+  	var name = req.session.name;
+  	if (!name) {
   		console.log('user not login');
   	}
-  	delete req.session.user;
+  	delete req.session.name;
   	res.render('account/login', {msg:'You have logout successfully'});
   },
 
