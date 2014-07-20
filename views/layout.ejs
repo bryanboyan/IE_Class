@@ -8,6 +8,12 @@
     -->
     <title><%- title %></title>
 
+		<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+		
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
@@ -21,6 +27,7 @@
       
     -->
     <link rel="stylesheet" type="text/css" href="/styles/bootstrap.min.css">
+    <link type="text/css" href='http://sailsjs.org/styles/fonts.css' rel='stylesheet'/>
 
     <!--
 
@@ -34,19 +41,46 @@
       
     -->
 
+    <!--
+      global scripts load
+      jquery scripts must be loaded before bootstrap scripts
+    -->
+    <script type="text/javascript" src='./js/jquery-2.0.3.min.js'></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+
   </head>
 
   <body>
 
-    <!-- top menu bar -->
-    <div class="container-fluid">
-      Hey how are you?
-    </div>
+		<div class="container">
+		    <!-- top menu bar -->
+		    <nav class="navbar navbar-default" role="navigation">
+		      <div class="container-fluid">
+		        <div class="navbar-header">
+		          <button type="button" class="navbar-toggle" 
+		            data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            <span class="sr-only">Toggle navigation</span>
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		          </button>
+		          <a class="navbar-brand" href="#">Infinity Education</a>
+		        </div>
+		      </div>
 
+		      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		        <ul class="nav navbar-nav">
+		          <li><a href="/class">Class</a></li>
+		          <li><a href="/teacher">Teacher</a></li>
+		          <li><a href="/student">Student</a></li>
+		        </ul>
+		      </div>
+		    </nav>
+		</div> <!-- container	-->
+		
     <!-- Include the view file for the current controller/route -->
-    <%- body %>
-
-
+		<%- body %>
+		
     <!--
 
       Client-side Javascript
