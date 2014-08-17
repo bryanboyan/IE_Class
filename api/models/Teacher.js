@@ -12,7 +12,10 @@ module.exports = {
   	id: 'integer',
   	name: 'string',
     passwd: 'string',
-  	desc: 'text'
+    sex: 'string',
+  	desc: 'text',
+    email: 'string',
+    phone: 'string'
   }
 
 };

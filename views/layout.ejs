@@ -81,16 +81,19 @@
 		<!-- teacher menu bar -->
 		<div id="teacher_view" class="menu_template">
       <ul class="nav navbar-nav">
-        <li><a href="/class">Class</a></li>
-        <li><a href="/teacher">Teacher</a></li>
-        <li><a href="/student">Student</a></li>
+        <li><a href="/user/my">My Page</a></li>
+        <li><a href="/class">Classes</a></li>
+        <li><a href="/teacher">Teachers</a></li>
+        <li><a href="/student">Students</a></li>
       </ul>
 		</div>
 		
 		<!-- student menu bar -->
 		<div id="student_view" class="menu_template">
       <ul class="nav navbar-nav">
-        <li><a href="/student/my">My Page</a></li>
+        <li><a href="/user/my">My Page</a></li>
+        <li><a href="/student/class">My Classes</a></li>
+        <li><a href="#">Inbox</a></li>
       </ul>
 		</div>
 
@@ -108,6 +111,11 @@
 		          </button> -->
 		          <a class="navbar-brand" href="/">Infinity Education</a>
 		        </div>
+						<div class="collapse navbar-collapse">
+							<ul class="nav navbar-nav navbar-right">
+				        <li><a href="/logout">logout</a></li>
+				      </ul>
+						</div>
 		      </div>
 
 		      <!-- <div class="collapse navbar-default" role="navigation">

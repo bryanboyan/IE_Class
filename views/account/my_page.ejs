@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="/styles/my_page.css" type="text/css">
+
+<div class="container">
+<!-- <%= user.img %> -->
+	<div class="personal-img">
+		<img src="/images/guest.png" alt="No such image">
+	</div>
+	<div class="personal-info row col-md-offset-4">
+		<table class="table-hover">
+			<tr>
+				<th class="col-md-4">NAME</th>
+				<td><%- user.name %></td>
+			</tr>
+			<tr>
+				<th class="col-md-4">SEX</th>
+				<td><%- user.sex %></td>
+			</tr>
+		</table>
+	</div>
+	<br>
+	<div class="personal-desc panel panel-info">
+		<div class="panel-heading">Introduction</div>
+		<div class="panel-body">Hey you!!</div>
+	</div>
+</div>

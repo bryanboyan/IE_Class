@@ -11,10 +11,11 @@ module.exports = {
   attributes: {
   	id: 'integer',
   	name: 'string',
+    passwd: 'string',
+    sex: 'string',
   	desc: 'text',
   	email: 'string',
   	phone: 'string',
-  	passwd:'string'
   }
 
 };

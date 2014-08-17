@@ -48,7 +48,7 @@ module.exports.routes = {
 
   '/logout': 'LoginController.logout',
 
-  '/student/my': 'StudentController.myPage',
+  '/user/my': 'UserController.myPage',
 
   /*
   // But what if you want your home page to display

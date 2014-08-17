@@ -21,18 +21,18 @@ module.exports = {
     
   index: function(req, res) {
   	var name = req.session.name;
-  	if (!name) {
-  		console.log('LoginController > welcome, user not login');
-      return res.redirect('/login');
-  	}
 
     // 根据isTeacher来判断返回什么界面.
-    var viewPage = req.session.isTeacher ? 'home/index' : 'student/my_page';
-    sails.log.info('viewPage is '+viewPage);
+    // FIXME 这个地方需要redirect
+    if (req.session.isTeacher) {
+      sails.log.info('index, is teacher, go to index');
+      return res.view('home/index', {
+        name: name
+      });
+    }
 
-  	res.view(viewPage, {
-      name: name
-    });
+    sails.log.info('index, is student, go to my page');
+    res.redirect('/user/my');
   },
 
   login: function(req, res) {
@@ -91,7 +91,8 @@ module.exports = {
         });
       }
 
-      req.session.name = username;    // establish session
+      req.session.authenticated = true; // establish session
+      req.session.name = username;
       req.session.isTeacher = isTeacher;
       res.cookie('isTeacher', isTeacher);
 
