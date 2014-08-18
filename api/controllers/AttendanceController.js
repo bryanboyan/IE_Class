@@ -1,5 +1,5 @@
 /**
- * TeacherController
+ * AttendanceController
  *
  * @module      :: Controller
  * @description	:: A set of functions called `actions`.
@@ -16,13 +16,23 @@
  */
 
 module.exports = {
-    
-  
 
+  /**
+   * 获取学生的课程信息，包括
+   * 1，已经上完的课程       (finished)
+   * 2，接下来要上的课程     (following)
+   * 3，接下来要确认上的课程  (pending)
+   * @param req
+   * @param res
+   */
+  myClass: function(req, res) {
+    var name = req.session.name;
+
+  },
 
   /**
    * Overrides for the settings in `config/controllers.js`
-   * (specific to TeacherController)
+   * (specific to AttendanceController)
    */
   _config: {}
 

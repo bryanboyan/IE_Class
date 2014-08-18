@@ -17,14 +17,26 @@
 
 module.exports = {
 
+  index: function(req, res) {
+
+  },
+
+  create: function(req, res) {
+
+  },
+
+  show: function(req, res) {
+
+  },
+
+  update: function(req, res) {
+
+  },
 
   myPage: function(req, res) {
     var name = req.session.name;
-    var isTeacher = req.session.isTeacher;
 
-    var _User = isTeacher ? Teacher : Student;
-
-    _User.findOne({name: name}).done(function(err, user) {
+    User.findOne({name: name}).done(function(err, user) {
       res.view('account/my_page', {
         user: user
       });

@@ -1,5 +1,5 @@
 /**
- * StudentController
+ * DefinitionController
  *
  * @module      :: Controller
  * @description	:: A set of functions called `actions`.
@@ -17,10 +17,13 @@
 
 module.exports = {
     
+  index: function(req, res) {
+
+  },
 
   /**
    * Overrides for the settings in `config/controllers.js`
-   * (specific to StudentController)
+   * (specific to DefinitionController)
    */
   _config: {}
 

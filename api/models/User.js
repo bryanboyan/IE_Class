@@ -1,5 +1,5 @@
 /**
- * Student
+ * User
  *
  * @module      :: Model
  * @description :: A short summary of how this model works and what it represents.
@@ -9,13 +9,21 @@
 module.exports = {
 
   attributes: {
-  	id: 'integer',
-  	name: 'string',
+    id: 'integer',
+    type: 'integer',
+    name: 'string',
     passwd: 'string',
     sex: 'string',
-  	desc: 'text',
-  	email: 'string',
-  	phone: 'string',
+    descr: 'text',
+    email: 'string',
+    phone: 'string'
+  },
+
+  constants: {
+    TYPE: {
+      STUDENT: 1,
+      TEACHER: 2
+    }
   }
 
 };

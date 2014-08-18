@@ -58,16 +58,11 @@ module.exports = {
     var md5sum = crypto.createHash('md5');
     md5sum.update(pw);
     var encoded_pw = md5sum.digest('hex');
-
-    var isTeacher = req.param('teacher');
-    isTeacher = !!isTeacher;
   	
   	// verify
-    sails.log.info('user is '+username+', pw is '+JSON.stringify(pw)+', and is teacher?:'+isTeacher);
+    sails.log.info('user is '+username+', pw is '+JSON.stringify(pw));
 
-    var stored_pw;
-    var _User = isTeacher ? Teacher : Student;
-    _User.findOne({name: username}).done(function(err, user) {
+    User.findOne({name: username}).done(function(err, user) {
       if (err) {
         sails.log.error(msgPref+'find user error');
       }
@@ -80,7 +75,7 @@ module.exports = {
         });
       }
 
-      stored_pw = user.passwd;
+      var stored_pw = user.passwd;
       if (encoded_pw !== stored_pw) {
 
         sails.log.error('LoginController > doLogin : password wrong, encoded_pw:'+encoded_pw+', stored_pw:'+stored_pw);
@@ -91,10 +86,12 @@ module.exports = {
         });
       }
 
+      var isTeacher = (user.type==User.constants.TYPE.TEACHER);
+
       req.session.authenticated = true; // establish session
       req.session.name = username;
       req.session.isTeacher = isTeacher;
-      res.cookie('isTeacher', isTeacher);
+      res.cookie('isTeacher', isTeacher); // set it into cookie.
 
       res.redirect('/');
     });
