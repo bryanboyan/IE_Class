@@ -9,21 +9,47 @@
 module.exports = {
 
   attributes: {
-    id: 'integer',
-    type: 'integer',
-    name: 'string',
-    passwd: 'string',
-    sex: 'string',
+    id: {
+      type: 'integer',
+      primaryKey: true,
+      autoIncrement: false,
+      required: true
+    },
+    type: {
+      type: 'integer',
+      required: true
+    },
+    name: {
+      type: 'string',
+      required: true
+    },
+    passwd: {
+      type: 'string',
+      required: true
+    },
+    sex: {
+      type: 'string',
+      required: true
+    },
     descr: 'text',
-    email: 'string',
-    phone: 'string'
+    email: {
+      type: 'string',
+      required: true
+    },
+    phone: 'string',
+    credit: {
+      type: 'integer',
+      defaultsTo: 0,
+      required: true
+    }   // for student only, credit in IE
   },
 
   constants: {
     TYPE: {
       STUDENT: 1,
       TEACHER: 2
-    }
+    },
+    TYPE_NAME: ['','Student','Teacher']
   }
 
 };

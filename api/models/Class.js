@@ -14,7 +14,8 @@ module.exports = {
     descr: 'text',        // desc of the class (init with definition desc)
     startAt: 'datetime',  // start date time
     leng: 'integer',      // class duration
-    status: 'integer'      // status of the class
+    status: 'integer',    // status of the class
+    teacherId: 'integer'  // teacherId
   },
 
   constants: {

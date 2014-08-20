@@ -49,6 +49,7 @@ module.exports.routes = {
   'get /logout': 'LoginController.logout',
 
   'get /user/my': 'UserController.myPage',
+  'get /user/new': 'UserController.$new',
 
   'get /class': 'ClassController.index',
   'get /class/new': 'ClassController.$new',

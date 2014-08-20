@@ -9,11 +9,12 @@
 module.exports = {
 
   attributes: {
-//    id: 'integer',    // class definition id  blank for sails to build it with auto-increment
-    name: 'string',   // class definition name
-    descr: 'text',    // class definition desc
-    leng: 'integer',  // class length in minutes
-    cond: 'string'    // class conditions for students, such as "preId:4,2,10;levelReq:3;"
+//    id: 'integer',      // class definition id  blank for sails to build it with auto-increment
+    name: 'string',       // class definition name
+    descr: 'text',        // class definition desc
+    leng: 'integer',      // class length in minutes
+    teacherId:'integer',  // teacherId
+    cond: 'string'        // class conditions for students, such as "preId:4,2,10;levelReq:3;"
   }
 
 };

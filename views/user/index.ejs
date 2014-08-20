@@ -1,0 +1,33 @@
+<h1><%= typeName %> List</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>name</th>
+			<th>sex</th>
+			<th>email</th>
+			<th>phone</th>
+			<th>description</th>
+			<th>ACTION</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<users.length; ++i) { var u = users[i]; %>
+		<tr>
+			<td><%- u.id %></td>
+			<td><%- u.name %></td>
+			<td><%- u.sex %></td>
+			<td><%- u.email %></td>
+			<td><%- u.phone %></td>
+			<td><%- u.descr %></td>
+			<td>
+				<a href="/user/profile?id=<%- u.id %>" class="btn btn-default">PROFILE</a>
+				<a href="/user/destroy?id=<%- u.id %>" class="btn btn-danger">DELETE</a>
+			</td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href="/user/new" class="btn btn-default">Create User</a>

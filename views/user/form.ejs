@@ -1,0 +1,49 @@
+<h1>User</h1>
+
+<form role="form" id="userForm" action="/user/create" method="post">
+	<% if (user.id) { %>
+		<input name="id" type="hidden" value="<%= user.id %>">
+	<% } %>
+	<div class="form-group">
+		<label for="name">Name (Max 20 chars)</label><br>
+		<input id="name" name="name" type="text" value="<%= user.name || '' %>" required>
+	</div>
+	
+	<div class="form-group">
+		<label for="passwd">Password</label><br>
+		<input id="passwd" name="passwd" type="password">
+	</div>
+	
+	<div class="form-group">
+		<label for="sex">Sex</label><br>
+		Male:		<input id="sex" class="sexSelection" name="sex" type="radio" value="M">&nbsp;
+		Female:	<input id="sex" class="sexSelection" name="sex" type="radio" value="F">
+	</div>
+	<!-- set the user's sex in the radio box -->
+	<script type="text/javascript">
+		if (user.sex) {
+			$(".sexSelection").each(function() {
+				var s = $(this).val();
+				if (user.sex == s) {
+					this.checked = true;
+				}
+			});
+		}
+	</script>
+
+	<div class="form-group">
+		<label for="email">Email</label><br>
+		<input id="email" name="email" value="<%= user.email || '' %>" required>
+	</div>
+
+	<div class="form-group">
+		<label for="phone">Phone</label><br>
+		<input id="phone" name="phone" value="<%= user.phone || '' %>" required>
+	</div>
+	
+	<div class="form-group">
+		<label for="descr">Description</label><br>
+		<textarea id="descr" name="descr" form="userForm" cols="50" rows="4" required><%= user.descr || 'Nothing special' %></textarea>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
