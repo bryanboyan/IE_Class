@@ -50,7 +50,11 @@ module.exports.routes = {
 
   'get /user/my': 'UserController.myPage',
 
+  'get /class': 'ClassController.index',
   'get /class/new': 'ClassController.$new',
+  'post /class/creaupdate': 'ClassController.$createOrUpdate',
+  'get /class/edit': 'ClassController.$edit',
+  'get /class/destroy': 'ClassController.$destroy',
 
   'get /definition': 'DefinitionController.index',
   'get /definition/new': 'DefinitionController.$new',

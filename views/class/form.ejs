@@ -1,16 +1,8 @@
 <h1>Class</h1>
 
-<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script> -->
-
-<link rel="stylesheet" type="text/css" href="/styles/jquery-ui-themes-smoothness.css">
-<script src="/js/jquery-ui.min.js"></script>
-
-<script type="text/javascript">
-  $(function() {
-    $( "#startAt" ).datepicker();
-  });
-</script>
+<!-- below datetimepicker -->
+<link rel="stylesheet" type="text/css" href="/styles/jquery.datetimepicker.css">
+<script src="/js/jquery.datetimepicker.js"></script>
 
 <form role="form" id="classForm" action="/class/creaupdate" method="post">
 	<% if (klass.id) { %>
@@ -21,17 +13,45 @@
 		<input id="name" name="name" type="text" value="<%= klass.name || '' %>" required>
 	</div>
 
+	<label for="startAt">Start At</label><br>
+	<input type="datetime" id="startAt" name="startAt" value="<%= klass.startAt || '' %>" required>
+
+	<div class="form-group">
+		<label for="leng">Class Length (minutes)</label><br>
+		<input id="leng" name="leng" type="number" min="1" max="480" value="<%= klass.leng || '' %>" required>
+	</div>
+
 	<div class="form-group">
 		<label for="descr">Class Description</label><br>
-		<textarea id="descr" name="descr" form="klassForm" cols="50" rows="4" required><%= klass.descr || '' %></textarea>
+		<textarea id="descr" name="descr" form="classForm" cols="50" rows="4" required><%= klass.descr || '' %></textarea>
 	</div>
-
-	<label for="startAt">Start At</label><br>
-	<input type="text" id="startAt" name="startAt" value="2014-06-13 17:00:00">
 
 	<div class="form-group">
-		<label for="duration">Duration</label><br>
-		<input name="duration" type="number" min="1" max="480" value="<%= klass.duration || '' %>" required>
+		<label for="status">Class Status</label><br>
+		<select name="status">
+			<% for (var key in Class.constants.STATUS) { var stat=Class.constants.STATUS[key]; %>
+			<option value="<%= stat %>" <%if (stat==klass.status) {%> selected <%}%> ><%= key %></option>
+			<% } %>
+		</select>
 	</div>
+
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script type="text/javascript">
+
+	// change format of startAt datetime
+	var startAt = $("#startAt").val();
+	if (startAt !='' ) {
+		var startAt_formated = Date.format(startAt, 'Y/m/d H:i');
+		$("#startAt").val(startAt_formated);
+	}
+	
+	// datetime picker
+  $(function() {
+    $( "#startAt" ).datetimepicker({
+    	format:'Y/m/d H:i',
+    	step:30
+    });
+  });
+</script>

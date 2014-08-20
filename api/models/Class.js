@@ -13,8 +13,8 @@ module.exports = {
     name: 'string',       // name of the class (init with definition name)
     descr: 'text',        // desc of the class (init with definition desc)
     startAt: 'datetime',  // start date time
-    duration: 'integer',  // class duration
-    status: 'number'      // status of the class
+    leng: 'integer',      // class duration
+    status: 'integer'      // status of the class
   },
 
   constants: {
@@ -23,7 +23,8 @@ module.exports = {
       PENDING: 1,     // pending, not confirmed by all
       CONFIRMED: 2,   // confirmed, confirmed by students and teacher, ready for attendance, students can not change attendance status at this point
       FINISHED: 3     // already finished
-    }
+    },
+    STAT_NUM: ['INIT', 'PENDING', 'CONFIRMED', 'FINISHED']  // the stat number->status collection
   }
 
 };

@@ -47,6 +47,7 @@
     -->
     <script src='/js/jquery-2.0.3.min.js'></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/extend.js"></script>
 		
 		<script type="text/javascript">
 		$(document).ready(function() {
@@ -56,6 +57,15 @@
 			isTeacher = (isTeacher && isTeacher!='false');
 			var menu_cnt = isTeacher ? $("div#teacher_view").html() : $("#student_view").html();
 			$("#menu-bar").append(menu_cnt);
+
+      // reformat all the datetime to uniformed time format
+      $(".china_time").each(function(index){
+        console.log(JSON.stringify(this));
+        var s = $(this).text();
+        console.log("div mapping, index:"+index+', s:'+s);
+        var f_s = Date.format(s, "Y/m/d H:i");
+        $(this).text(f_s);
+      });
 		});
 		
 		function hideTemplates () {
