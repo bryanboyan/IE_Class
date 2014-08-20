@@ -36,7 +36,7 @@ module.exports = {
   },
 
   login: function(req, res) {
-    res.view('account/login', {
+    res.view('user/login', {
       layout: false
     });
   },
@@ -49,7 +49,7 @@ module.exports = {
 
     if (!username && !pw) {
       sails.log.error(msgPref+'username or pw required');
-      return res.view('account/login', {
+      return res.view('user/login', {
         err: "username or pw required",
         layout: false
       });
@@ -69,7 +69,7 @@ module.exports = {
 
       if (!user) {
         sails.log.error(msgPref+'user not found');
-        return res.view('account/login', {
+        return res.view('user/login', {
           err: "user not found",
           layout: false
         });
@@ -80,7 +80,7 @@ module.exports = {
 
         sails.log.error('LoginController > doLogin : password wrong, encoded_pw:'+encoded_pw+', stored_pw:'+stored_pw);
         // password wrong
-        return res.view('account/login', {
+        return res.view('user/login', {
           err: "username or password wrong",
           layout: false
         });
@@ -103,7 +103,7 @@ module.exports = {
   		console.log('user not login');
   	}
   	delete req.session.name;
-  	res.render('account/login', {msg:'You have logout successfully'});
+  	res.render('user/login', {msg:'You have logout successfully'});
   },
 
   

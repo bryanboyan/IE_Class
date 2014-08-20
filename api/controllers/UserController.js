@@ -37,7 +37,7 @@ module.exports = {
     var name = req.session.name;
 
     User.findOne({name: name}).done(function(err, user) {
-      res.view('account/my_page', {
+      res.view('user/my_page', {
         user: user
       });
     });
