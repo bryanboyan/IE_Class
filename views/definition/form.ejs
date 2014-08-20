@@ -1,0 +1,24 @@
+<h1>Definition</h1>
+
+<form role="form" id="definitionForm" action="/definition/creaupdate" method="post">
+	<% if (definition.id) { %>
+		<input name="id" type="hidden" value="<%= definition.id %>">
+	<% } %>
+	<div class="form-group">
+		<label for="name">Definition Name (Max 20 chars)</label><br>
+		<input name="name" type="text" value="<%= definition.name || '' %>" required>
+	</div>
+	<div class="form-group">
+		<label for="leng">Class Length (minutes)</label><br>
+		<input name="leng" type="number" min="1" max="480" value="<%= definition.leng || '' %>" required>
+	</div>
+	<div class="form-group">
+		<label for="cond">Attendance Condition</label><br>
+		<input name="cond" disabled value="not implemented yet">
+	</div>
+	<div class="form-group">
+		<label for="descr">Description</label><br>
+		<textarea name="descr" form="definitionForm" cols="50" rows="4" required><%= definition.descr || '' %></textarea>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

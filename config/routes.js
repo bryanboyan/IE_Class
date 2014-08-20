@@ -50,6 +50,16 @@ module.exports.routes = {
 
   'get /user/my': 'UserController.myPage',
 
+  'get /class/new': 'ClassController.$new',
+
+  'get /definition': 'DefinitionController.index',
+  'get /definition/new': 'DefinitionController.$new',
+  'post /definition/creaupdate': 'DefinitionController.$createOrUpdate',
+  'get /definition/edit': 'DefinitionController.$edit',
+  'get /definition/destroy': 'DefinitionController.$destroy',
+
+  '/hey': 'DefinitionController.$new'
+
   /*
   // But what if you want your home page to display
   // a signup form located at `views/user/signup.ejs`?

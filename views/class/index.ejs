@@ -1,0 +1,24 @@
+<h1>Classes</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>name</th>
+			<th>length (min)</th>
+			<th>condition</th>
+			<th>description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<definitions.length; ++i) { var d = definitions[i]; %>
+		<tr>
+			<td><%- d.id %></td>
+			<td><%- d.name %></td>
+			<td><%- d.leng %></td>
+			<td><%- d.cond %></td>
+			<td><%- d.descr %></td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>

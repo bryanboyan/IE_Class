@@ -1,0 +1,37 @@
+<h1>Class</h1>
+
+<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script> -->
+
+<link rel="stylesheet" type="text/css" href="/styles/jquery-ui-themes-smoothness.css">
+<script src="/js/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+  $(function() {
+    $( "#startAt" ).datepicker();
+  });
+</script>
+
+<form role="form" id="classForm" action="/class/creaupdate" method="post">
+	<% if (klass.id) { %>
+		<input name="id" type="hidden" value="<%= klass.id %>">
+	<% } %>
+	<div class="form-group">
+		<label for="name">Class Name (Max 20 chars)</label><br>
+		<input id="name" name="name" type="text" value="<%= klass.name || '' %>" required>
+	</div>
+
+	<div class="form-group">
+		<label for="descr">Class Description</label><br>
+		<textarea id="descr" name="descr" form="klassForm" cols="50" rows="4" required><%= klass.descr || '' %></textarea>
+	</div>
+
+	<label for="startAt">Start At</label><br>
+	<input type="text" id="startAt" name="startAt" value="2014-06-13 17:00:00">
+
+	<div class="form-group">
+		<label for="duration">Duration</label><br>
+		<input name="duration" type="number" min="1" max="480" value="<%= klass.duration || '' %>" required>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

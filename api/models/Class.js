@@ -9,11 +9,11 @@
 module.exports = {
 
   attributes: {
-    id: 'integer',        // id of class
+//    id: 'integer',        // id of class  blank for sails to build it with auto-increment
     name: 'string',       // name of the class (init with definition name)
-    descr: 'text',         // desc of the class (init with definition desc)
+    descr: 'text',        // desc of the class (init with definition desc)
     startAt: 'datetime',  // start date time
-    endAt: 'datetime',    // end date time
+    duration: 'integer',  // class duration
     status: 'number'      // status of the class
   },
 
@@ -21,7 +21,7 @@ module.exports = {
     STATUS: {
       INIT: 0,        // init, can only be viewed or edited by teacher
       PENDING: 1,     // pending, not confirmed by all
-      CONFIRMED: 2,   // confirmed, confirmed by students and teacher, ready for attendance
+      CONFIRMED: 2,   // confirmed, confirmed by students and teacher, ready for attendance, students can not change attendance status at this point
       FINISHED: 3     // already finished
     }
   }
