@@ -15,7 +15,12 @@ module.exports = {
       type: 'string',
       primaryKey: true
     },
-    userId: {
+    valid: {            // is true initially, turn false when used.
+      type: 'boolean',
+      required: true,
+      defaultsTo: true
+    },
+    userId: {           // keeps all userId history, for userId findUp
       type: 'integer',
       unique: true,
       required: true

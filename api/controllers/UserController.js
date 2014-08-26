@@ -87,7 +87,7 @@ module.exports = {
       return res.view('403.ejs', {message: 'wrong URL!!'});
     }
 
-    Register.findOne({id:code}, function(err, register) {
+    Register.findOne({id:code, valid:true}, function(err, register) {
       if (err) {
         sails.log.error(msgPref+'findOne err:'+JSON.stringify(err));
         return res.view('500.ejs');
@@ -132,7 +132,7 @@ module.exports = {
     var fns = [];
 
     fns.push(function(cb) {
-      Register.findOne({id: code}, function(err, register) {
+      Register.findOne({id: code, valid: true}, function(err, register) {
         if (err) {
           sails.log.error(msgPref+'register findOne err:'+JSON.stringify(err));
           return cb(500);
@@ -140,7 +140,7 @@ module.exports = {
 
         if (!register) {
           sails.log.error(msgPref+'register not found');
-          return cb(403);
+          return cb(403, {message: 'register Not found or not valid'});
         }
 
         cb(null, register);
@@ -166,13 +166,14 @@ module.exports = {
           return cb(500);
         }
 
-        cb(null);
+        cb(null, register);
       });
     });
 
-    // clear the register code
-    fns.push(function(cb) {
-      Register.destroy({id: code}, function(err){
+    // turn the register record valid to false
+    fns.push(function(register, cb) {
+      register.valid = false;
+      register.save(function(err) {
         if (err) {
           sails.log.error(msgPref+'register destroy err:'+JSON.stringify(err));
           return cb(500);

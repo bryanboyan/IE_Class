@@ -20,7 +20,7 @@ var async = require('async');
 module.exports = {
 
   index: function(req, res) {
-    Register.find({}, function(err, list) {
+    Register.find({valid: true}, function(err, list) {
       if (err) {
         sails.log.error('RegisterController > index: find register err:'+JSON.stringify(err));
         return res.view('500.ejs');
@@ -33,7 +33,7 @@ module.exports = {
   },
 
   new: function(req, res) {
-    User.query('select max(id) as maxId from user', function(err, rst) {
+    Register.query('select max(userId) as maxId from register', function(err, rst) {
       if (err) {
         sails.log.error('RegisterController > new: user find max id err:'+JSON.stringify(err));
         return res.view('500.ejs');
