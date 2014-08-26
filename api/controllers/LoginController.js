@@ -89,7 +89,7 @@ module.exports = {
       var isTeacher = (user.type==User.constants.TYPE.TEACHER);
 
       req.session.authenticated = true; // establish session
-      req.session.id = user.id;
+      req.session.userId = user.id;
       req.session.name = username;
       req.session.isTeacher = isTeacher;
       res.cookie('isTeacher', isTeacher); // set it into cookie.
@@ -105,7 +105,7 @@ module.exports = {
   	}
     delete req.session.authenticated;
   	delete req.session.name;
-    delete req.session.id;
+    delete req.session.userId;
   	res.render('user/login', {msg:'You have logout successfully'});
   },
 

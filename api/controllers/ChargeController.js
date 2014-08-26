@@ -15,6 +15,8 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var async = require('async');
+
 module.exports = {
 
   index: function(req, res) {
@@ -30,7 +32,9 @@ module.exports = {
   },
 
   my: function(req, res) {
-    var userId = req.param('userId');
+    var userId = req.session.userId;
+//    sails.log.info('userId: '+userId);
+    sails.log.debug('dump session: '+JSON.stringify(req.session));
     Charge.find({where:{userId:userId}, sort:'timeAt DESC'}, function(err, chargeList) {
       if (err) {
         sails.log.error('ChargeHistController > my, find error:'+JSON.stringify(err));
@@ -38,7 +42,7 @@ module.exports = {
       }
 
       chargeList = chargeList || [];
-      res.view('charge/index', {chargeList:chargeList});
+      res.view('charge/my', {chargeList:chargeList});
     });
   },
 
@@ -75,30 +79,48 @@ module.exports = {
           return res.view('500.ejs');
         }
 
+        var beforeAmt = charge.amount;
+
         charge.userId = userId;
         charge.userName = userName;
         charge.amount = amount;
         charge.timeAt= timeAt;
 
-        charge.save(function(err, updatedDoc) {
+        var addedAmt = amount - beforeAmt;
+
+        _updateUserCredit(userId, addedAmt, function(err1) {
+          if (err1) {
+            sails.log.error(msgPref+'updateUserCredit err:'+JSON.stringify(err1));
+            return res.view('500.ejs');
+          }
+
+          charge.save(function(err2, updatedDoc) {
+            if (err2) {
+              sails.log.error(msgPref+'charge save doc:'+JSON.stringify(charge)+', err:'+JSON.stringify(err2));
+              return res.view('500.ejs');
+            }
+
+            res.redirect('/charge');
+          });
+        });
+      });
+
+    } else {  // create
+      _updateUserCredit(userId, amount, function(err1) {
+        if (err1) {
+          sails.log.error(msgPref+'updateUserCredit err:'+JSON.stringify(err1));
+          return res.view('500.ejs');
+        }
+
+        // trust the params b/c it will be validated on client side.
+        Charge.create({userId:userId, userName:userName, amount:amount, timeAt:timeAt}, function(err) {
           if (err) {
-            sails.log.error(msgPref+'charge save doc:'+JSON.stringify(charge)+', err:'+JSON.stringify(err));
+            sails.log.error(msgPref+'create err:'+JSON.stringify(err));
             return res.view('500.ejs');
           }
 
           res.redirect('/charge');
         });
-      });
-
-    } else {  // create
-      // trust the params b/c it will be validated on client side.
-      Charge.create({userId:userId, userName:userName, amount:amount, timeAt:timeAt}, function(err) {
-        if (err) {
-          sails.log.error(msgPref+'create err:'+JSON.stringify(err));
-          return res.view('500.ejs');
-        }
-
-        res.redirect('/charge');
       });
     }
   },
@@ -111,14 +133,58 @@ module.exports = {
       return res.view('400.ejs');
     }
 
-    Charge.destroy({id:id}, function(err) {
-      if (err) {
-        sails.log.error(msgPref+'destroy charge err:'+JSON.stringify(err));
-        return res.view('500.ejs');
+    var fns = [];
+
+    fns.push(function(cb) {
+      Charge.findOne({id:id}, function(err, charge) {
+        if (err) {
+          sails.log.error(msgPref+'findOne charge err: '+JSON.stringify(err));
+          return cb(500);
+        }
+        if (!charge) {
+          sails.log.error(msgPref+'no such charge');
+          return cb(404);
+        }
+
+        cb(null, charge);
+      });
+    });
+
+    fns.push(function(charge, cb) {
+      var addedAmt = -charge.amount;
+
+      if (addedAmt) { // not 0
+        _updateUserCredit(charge.userId, addedAmt, function(err) {
+          if (err) {
+            sails.log.error(msgPref+'update user credit err: '+JSON.stringify(err));
+            return cb(500);
+          }
+          cb();
+        });
+      } else {
+        cb();
+      }
+    });
+
+    fns.push(function(cb) {
+      Charge.destroy({id:id}, function(err) {
+        if (err) {
+          sails.log.error(msgPref+'destroy charge err:'+JSON.stringify(err));
+          return cb(500);
+        }
+
+        cb();
+      });
+    });
+
+    async.waterfall(fns, function(errNo) {
+      if (errNo) {
+        return res.view(errNo+'.ejs');
       }
 
       res.redirect('/charge');
     });
+
   },
 
   /**
@@ -129,3 +195,24 @@ module.exports = {
 
 
 };
+
+/**
+ *
+ * @param userId
+ * @param amount - amount of credit to add up to user credit
+ * @param cb
+ * @private
+ */
+function _updateUserCredit (userId, amount, cb) {
+  amount = parseInt(amount);
+  User.findOne({id: userId}, function(err, user) {
+    if (err) {
+      sails.log.error('ChargeController > _updateUserCredit: '+JSON.stringify(err));
+      return cb(err);
+    }
+    user.credit += amount;
+    user.save(function(err, updatedDoc) {
+      cb(err);
+    });
+  });
+}

@@ -56,7 +56,7 @@ module.exports.routes = {
 
   'post /charge/creaupdate': 'ChargeController.$createOrUpdate',
 
-  '/hey': 'DefinitionController.$new'
+  '/hey': 'DefinitionController.new'
 
   /*
   // But what if you want your home page to display
