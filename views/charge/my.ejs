@@ -1,0 +1,22 @@
+<h1>Charge History</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>studentId</th>
+			<th>studentName</th>
+			<th>amount</th>
+			<th>timeAt</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<chargeList.length; ++i) { var c = chargeList[i]; %>
+		<tr>
+			<td><%- c.userId %></td>
+			<td><%= c.userName %></td>
+			<td><%- c.amount %></td>
+			<td><%- c.timeAt %></td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>

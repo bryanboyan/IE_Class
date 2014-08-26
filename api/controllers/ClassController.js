@@ -28,7 +28,12 @@ module.exports = {
     });
   },
 
-  $new: function(req, res) {
+  my: function(req, res) {
+    var id = req.session.id;
+
+  },
+
+  new: function(req, res) {
     var msgPref = 'ClassController > $new: ';
     var defId = req.param('defId');
     if (!defId) {
@@ -57,7 +62,7 @@ module.exports = {
     });
   },
 
-  $edit: function(req, res) {
+  edit: function(req, res) {
     var msgPref = 'ClassController > $edit: ';
     var id = req.param('id');
     Class.findOne({id: id}, function(err, klass) {
@@ -139,7 +144,7 @@ module.exports = {
     }
   },
 
-  $destroy: function(req, res) {
+  destroy: function(req, res) {
     var msgPref = 'ClassController > $destroy: ';
     var id = req.param('id');
     if (!id) {

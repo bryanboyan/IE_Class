@@ -32,11 +32,46 @@ module.exports = {
     });
   },
 
+  retrieveInfo: function(req, res) {
+    var msgPref = "UserController > retrieveInfo: ";
+
+    var key = req.param('key');
+    key = key.toLowerCase();
+    var rKey = '';
+    switch(key) {
+      case 'userid':    rKey="id"; break;
+      case 'username':  rKey="name";  break;
+      default:  rKey=null;
+    }
+
+    if (!rKey) {
+      return res.json(400,{msg:'key not right'});
+    }
+
+    var value = req.param('value');
+
+    var q = {};
+    q[rKey] = value;
+    User.findOne(q, function(err, user) {
+      if (err) {
+        sails.log.error(msgPref+'findOne user query:'+JSON.stringify(q)+', err:'+JSON.stringify(err));
+        return res.json(500,{msg:'error happens'});
+      }
+
+      if (!user) {
+        sails.log.warn(msgPref + 'no such user');
+        return res.json(404,{msg:'user not found'});
+      }
+
+      res.json({user: user});
+    });
+  },
+
   profile: function(req, res) {
     _renderUser(req, res, 'user/my_page');
   },
 
-  $new: function(req, res) {
+  new: function(req, res) {
     res.view('user/form', {user: {}});
   },
 
@@ -97,14 +132,25 @@ module.exports = {
     }
   },
 
-  $destroy: function(req, res) {
+  destroy: function(req, res) {
 
   },
 
-  myPage: function(req, res) {
-    var name = req.session.name;
+  my: function(req, res) {
+    var msgPref = 'UserController > my';
 
-    User.findOne({name: name}).done(function(err, user) {
+    var name = req.session.name;
+    if (!name) {
+      sails.log.error(msgPref + 'no name in session');
+      return res.view('400.ejs');
+    }
+
+    User.findOne({name: name}, function(err, user) {
+      if (err) {
+        sails.log.error(msgPref + 'findOne error');
+        return res.view('500.ejs');
+      }
+
       res.view('user/my_page', {
         user: user
       });

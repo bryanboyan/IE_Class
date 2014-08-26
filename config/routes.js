@@ -48,20 +48,13 @@ module.exports.routes = {
 
   'get /logout': 'LoginController.logout',
 
-  'get /user/my': 'UserController.myPage',
-  'get /user/new': 'UserController.$new',
+  'get /user/retrieveInfo': 'UserController.retrieveInfo',
 
-  'get /class': 'ClassController.index',
-  'get /class/new': 'ClassController.$new',
   'post /class/creaupdate': 'ClassController.$createOrUpdate',
-  'get /class/edit': 'ClassController.$edit',
-  'get /class/destroy': 'ClassController.$destroy',
 
-  'get /definition': 'DefinitionController.index',
-  'get /definition/new': 'DefinitionController.$new',
   'post /definition/creaupdate': 'DefinitionController.$createOrUpdate',
-  'get /definition/edit': 'DefinitionController.$edit',
-  'get /definition/destroy': 'DefinitionController.$destroy',
+
+  'post /charge/creaupdate': 'ChargeController.$createOrUpdate',
 
   '/hey': 'DefinitionController.$new'
 

@@ -28,11 +28,11 @@ module.exports = {
     });
   },
 
-  $new: function(req, res) {
+  new: function(req, res) {
     res.view('definition/form', {definition: {}});
   },
 
-  $edit: function(req, res) {
+  edit: function(req, res) {
     var id = req.param('id');
     Definition.findOne({id: id}, function(err, definition) {
       if (err || !definition) {
@@ -82,7 +82,7 @@ module.exports = {
     }
   },
 
-  $destroy: function(req, res) {
+  destroy: function(req, res) {
     var id = req.param('id');
     if (!id) {
 

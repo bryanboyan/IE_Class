@@ -1,0 +1,29 @@
+<h1>Charge List</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>studentId</th>
+			<th>studentName</th>
+			<th>amount</th>
+			<th>timeAt</th>
+			<th>ACTIONS</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<chargeList.length; ++i) { var c = chargeList[i]; %>
+		<tr>
+			<td><%- c.userId %></td>
+			<td><%= c.userName %></td>
+			<td><%- c.amount %></td>
+			<td><div class="china_time"><%- c.timeAt %></div></td>
+			<td>
+				<a href="/charge/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="/charge/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
+			</td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href="/charge/new" class="btn btn-default">New Charge</a>

@@ -1,5 +1,5 @@
 /**
- * ChargeHist
+ * Charge
  *
  * @module      :: Model
  * @description :: A short summary of how this model works and what it represents.
@@ -8,9 +8,16 @@
 
 module.exports = {
 
+  autoCreatedAt: false,
+  autoUpdatedAt: false,
+
   attributes: {
     userId: 'integer',
-    amount: 'integer'
+    userName: 'string', // 冗余，方便查看
+    amount: 'integer',
+    timeAt: {
+      type: 'datetime'
+    }
   }
 
 };

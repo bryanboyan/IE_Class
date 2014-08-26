@@ -9,7 +9,8 @@
 module.exports = {
 
   attributes: {
-    id: 'number',     // class id
+    classId: 'number',  // class id
+    className: 'string',// class name, duplicated to Class model but for easy access
     userId: 'number', // user id  often students.
     defId: 'number',  // class definitionId, duplicated to Class model but for easy access
     status: 'number'  // status for the student to attend class
