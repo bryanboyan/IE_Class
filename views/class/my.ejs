@@ -1,0 +1,43 @@
+<h1>Classes</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>name</th>
+			<th>startAt</th>
+			<th>length (min)</th>
+			<th>description</th>
+			<th>status</th>
+			<th>ACTIONS</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<klasses.length; ++i) { var c = klasses[i]; %>
+		<tr>
+			<td><%- c.id %></td>
+			<td><%- c.name %></td>
+			<td><div class="china_time"><%= c.startAt %></div</td>
+			<td><%- c.leng %></td>
+			<td><%- c.descr %></td>
+			<td>
+				<span class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
+			</td>
+			<td>
+				<a href="/class/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="/class/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
+			</td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href="/definition" class="btn btn-default">Create Class (To Definition List)</a>
+
+<script type="text/javascript">
+	// add colors for each status
+	$(".classStatus[value=0]").addClass("label label-warning");		// init
+	$(".classStatus[value=1]").addClass("label label-info");			// pending
+	$(".classStatus[value=2]").addClass("label label-success");		// confirmed
+	$(".classStatus[value=3]").addClass("label label-default");		// finished
+</script>

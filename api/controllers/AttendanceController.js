@@ -25,9 +25,19 @@ module.exports = {
    * @param req
    * @param res
    */
-  myClass: function(req, res) {
-    var name = req.session.name;
+  my: function(req, res) {
+    var msgPref = 'AttendanceController > my: ';
+    var id = req.session.userId;
+    Attendance.find({userId:id}, function(err, classes) {
+      if (err) {
+        sails.log.error(msgPref + 'find err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
 
+
+
+      res.view('')
+    });
   },
 
   /**

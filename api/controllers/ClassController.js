@@ -28,11 +28,6 @@ module.exports = {
     });
   },
 
-  my: function(req, res) {
-    var id = req.session.id;
-
-  },
-
   new: function(req, res) {
     var msgPref = 'ClassController > $new: ';
     var defId = req.param('defId');
