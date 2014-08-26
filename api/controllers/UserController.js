@@ -74,10 +74,10 @@ module.exports = {
     _renderUser(req, res, 'user/my_page');
   },
 
-  new: function(req, res) {
-    // 根据code来检验是否有效
-    res.view('user/form', {user: {}});
-  },
+//  new: function(req, res) {
+//    // 根据code来检验是否有效
+//    res.view('user/form', {user: {}});
+//  },
 
   register: function(req, res) {
     var msgPref = 'UserController > register: ';
