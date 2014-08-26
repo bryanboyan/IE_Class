@@ -21,6 +21,12 @@ module.exports.policies = {
   LoginController: {
     "*": true,
     index: 'isAuthenticated'
+  },
+
+  UserController: {
+    "*": 'isAuthenticated',
+    "register": true,
+    "create": true
   }
 
   /*

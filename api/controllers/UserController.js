@@ -15,6 +15,9 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var crypto = require('crypto');
+var async = require('async');
+
 module.exports = {
 
   index: function(req, res) {
@@ -72,7 +75,156 @@ module.exports = {
   },
 
   new: function(req, res) {
+    // 根据code来检验是否有效
     res.view('user/form', {user: {}});
+  },
+
+  register: function(req, res) {
+    var msgPref = 'UserController > register: ';
+    var code = req.param('c');
+    if (!code) {
+      sails.log.error(msgPref+'no register code provided');
+      return res.view('403.ejs');
+    }
+
+    Register.findOne({id:code}, function(err, register) {
+      if (err) {
+        sails.log.error(msgPref+'findOne err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+
+      if (!register) {
+        sails.log.error(msgPref+'no register code exist'+JSON.stringify(err));
+        return res.view('403.ejs');
+      }
+
+      var user = {
+        id: register.userId,
+        type: register.type,
+        email: register.email
+      };
+
+      res.view('user/registration', {user:user, code:code});
+    });
+  },
+
+  create: function(req, res) {
+    var msgPref = 'UserController > create: ';
+
+    var code = req.param('code');
+
+    var name = req.param('name');
+    var email = req.param('email');
+    var phone = req.param('phone');
+    var sex = req.param('sex');
+    var descr= req.param('descr');
+    var passwd = req.param('passwd');
+
+    // password md5lize
+    if (!passwd) {
+      sails.log.error(msgPref+'no passwd provided');
+      return res.view('403.ejs');
+    }
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(passwd);
+    var passwdStr = md5sum.digest('hex');
+
+    var fns = [];
+
+    fns.push(function(cb) {
+      Register.findOne({id: code}, function(err, register) {
+        if (err) {
+          sails.log.error(msgPref+'register findOne err:'+JSON.stringify(err));
+          return cb(500);
+        }
+
+        if (!register) {
+          sails.log.error(msgPref+'register not found');
+          return cb(403);
+        }
+
+        cb(null, register);
+      });
+    });
+
+    fns.push(function(register, cb) {
+      var obj = {
+        id: register.userId,
+        type: register.type,
+        name: name,
+        passwd: passwdStr,
+        sex: sex,
+        descr: descr,
+        email: email,
+        phone: phone,
+        credit: User.constants.INIT.CREDIT
+      };
+
+      User.create(obj, function(err) {
+        if (err) {
+          sails.log.error(msgPref+'create user obj:'+JSON.stringify(obj)+', err:'+JSON.stringify(err));
+          return cb(500);
+        }
+
+        cb(null);
+      });
+    });
+
+    // clear the register code
+    fns.push(function(cb) {
+      Register.destroy({id: code}, function(err){
+        if (err) {
+          sails.log.error(msgPref+'register destroy err:'+JSON.stringify(err));
+          return cb(500);
+        }
+
+        cb(null);
+      });
+    });
+
+    async.waterfall(fns, function(errNo) {
+      if(errNo) {
+        return res.view(errNo+'.ejs');
+      }
+
+      res.view('user/login', {
+        msg:'Thank you for registration, please login first',
+        layout: false
+      });
+    });
+  },
+
+  checkExistence: function(req, res) {
+    var key = req.param('key');
+    var value = req.param('value');
+
+    var rKey;
+    switch(key) {
+      case "userId":
+      case "id":
+        rKey = "id";
+        value = parseInt(value);
+        if (!isFinite(value)) {
+
+        }
+        break;
+      case "userName":
+      case "name":
+        rKey = 'name';
+        break;
+      default:
+
+    }
+
+    User.query('select 1 from user where '+rKey+'='+value, function(err, rst) {
+      if (err) {
+
+      }
+
+      rst = rst || [];
+      var exist = rst.length>0; // rst.length>=1 exist, ==0 not exist
+      res.json({exist: exist});
+    });
   },
 
 //  $edit: function(req, res) {
@@ -142,7 +294,7 @@ module.exports = {
     var name = req.session.name;
     if (!name) {
       sails.log.error(msgPref + 'no name in session');
-      return res.view('400.ejs');
+      return res.view('403.ejs');
     }
 
     User.findOne({name: name}, function(err, user) {

@@ -130,7 +130,7 @@ module.exports = {
     var id = req.param('id');
     if (!id) {
       sails.log.error(msgPref+'id not given');
-      return res.view('400.ejs');
+      return res.view('403.ejs');
     }
 
     var fns = [];

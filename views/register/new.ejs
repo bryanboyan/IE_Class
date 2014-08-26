@@ -1,0 +1,33 @@
+<h1>User Register</h1>
+
+<form role="form" id="registerForm" action="/register/create" method="post">
+	<div class="form-group">
+		<label for="userId">User ID</label><br>
+		<input id="userId" name="userId" type="text" value="<%= recommendedId || '' %>" required>
+	</div>
+
+	<div class="form-group">
+		<label for="type">User Type</label><br>
+		Student:		<input id="type" name="type" type="radio" value="1">&nbsp;
+		Teacher:		<input id="type" name="type" type="radio" value="2">
+	</div>
+
+	<div class="form-group">
+		<label for="email">User Email</label><br>
+		<input id="email" name="email" type="email" required>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Send Mail for Registration</button>
+</form>
+
+<script type="text/javascript">
+$("#userId").change(function() {
+	var uid = $(this).val();
+	console.log('userId uid:'+uid);
+	var paramStr = "key=userId&value="+uid;
+	$.get('/user/checkExistence?'+paramStr, function(data) {
+		var exist = data.exist;
+		console.log('exist ',exist);
+	});
+});
+</script>

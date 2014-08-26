@@ -58,6 +58,10 @@
 			var menu_cnt = isTeacher ? $("div#teacher_view").html() : $("#student_view").html();
 			$("#menu-bar").append(menu_cnt);
 
+      var userName = getCookie('userName');
+      console.log('userName is '+userName);
+      $("#menu-bar #my-name").text(userName);
+
       // reformat all the datetime to uniformed time format
       $(".china_time").each(function(index){
         console.log(JSON.stringify(this));
@@ -99,6 +103,8 @@
           <ul class="dropdown-menu" role="menu">
             <li><a href="/user?type=1">Student</a></li>
             <li><a href="/user?type=2">Teacher</a></li>
+            <li><a href="/register/new">Register</a></li>
+            <li><a href="/register">Register List</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -114,7 +120,7 @@
 		<!-- student menu bar -->
 		<div id="student_view" class="menu_template">
       <ul class="nav navbar-nav">
-        <li><a href="/user/my">My Page</a></li>
+        <li><a href="/user/my" id="my-name">My Page</a></li>
         <li><a href="/student/class">My Classes</a></li>
         <li><a href="/charge/my">Charge History</a></li>
         <li><a href="#">Inbox</a></li>

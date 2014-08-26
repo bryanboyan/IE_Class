@@ -1,0 +1,28 @@
+<h1>Register List</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Code</th>
+			<th>userId</th>
+			<th>type</th>
+			<th>email</th>
+			<th>ACTION</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<list.length; ++i) { var r = list[i]; %>
+		<tr>
+			<td><%- r.id %></td>
+			<td><%- r.userId %></td>
+			<td><%- r.type %></td>
+			<td><%- r.email %></td>
+			<td>
+				<a href="/register/destroy?id=<%- r.id %>" class="btn btn-danger">DELETE</a>
+			</td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+
+<a href="/register/new" class="btn btn-default">Register User</a>

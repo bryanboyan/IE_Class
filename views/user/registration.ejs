@@ -1,0 +1,62 @@
+<h1>User Registration</h1>
+
+<form role="form" id="userForm" action="/user/create" method="post">
+	<input name="code" type="hidden" value="<%= code %>">
+
+	<div class="form-group">
+		<label for="id">ID</label><br>
+		<input id="id" name="id" type="text" value="<%= user.id || '' %>" disabled>
+	</div>
+
+	<div class="form-group">
+		<label for="name">Name (Max 20 chars)</label><br>
+		<input id="name" name="name" type="text" required>
+	</div>
+	
+	<div class="form-group">
+		<label for="passwd">Password</label><br>
+		<input id="passwd" name="passwd" type="password" required onchange="form.pwcmp.pattern=this.value">
+	</div>
+
+	<div class="form-group">
+		<label for="pwcmp">Confirm Password</label><br>
+		<input id="pwcmp" name="pwcmp" type="password" 
+			oninvalid="this.setCustomValidity('Please input the same password')" required>
+	</div>	
+	
+	<div class="form-group">
+		<label for="sex">Sex</label><br>
+		Male:		<input id="sex" class="sexSelection" name="sex" type="radio" value="M">&nbsp;
+		Female:	<input id="sex" class="sexSelection" name="sex" type="radio" value="F">
+	</div>
+
+	<div class="form-group">
+		<label for="email">Email</label><br>
+		<input id="email" name="email" value="<%= user.email || '' %>" required>
+	</div>
+
+	<div class="form-group">
+		<label for="phone">Phone</label><br>
+		<input id="phone" name="phone" value="<%= user.phone || '' %>" required>
+	</div>
+	
+	<div class="form-group">
+		<label for="descr">Description</label><br>
+		<textarea id="descr" name="descr" form="userForm" cols="50" rows="4" required></textarea>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script type="text/javascript">
+$("#name").change(function(){
+	var value = $(this).val();
+	var paramStr = "key=userName&value="+value;
+	$.get('/user/checkExistence?'+paramStr, function(data) {
+		var exist = data.exist;
+		if (exist) {
+			//TODO if available, put a √ at end of name, if not available, error
+		}
+	});
+});
+</script>

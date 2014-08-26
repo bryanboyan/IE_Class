@@ -50,7 +50,10 @@ module.exports = {
       STUDENT: 1,
       TEACHER: 2
     },
-    TYPE_NAME: ['','Student','Teacher']
+    TYPE_NAME: ['','Student','Teacher'],
+    INIT: {
+      CREDIT: 0
+    }
   }
 
 };
