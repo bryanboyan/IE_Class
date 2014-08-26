@@ -89,6 +89,8 @@ module.exports = {
     var status = req.param('status');
     status = parseInt(status);
 
+    // TODO deal with studentIds
+
     sails.log.info('id:'+id+', name:'+name+', startAt:'+startAt+', length:'+leng+', description:'+descr);
 
     if (isFinite(id)) { // update

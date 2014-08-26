@@ -4,6 +4,11 @@
 <link rel="stylesheet" type="text/css" href="/styles/jquery.datetimepicker.css">
 <script src="/js/jquery.datetimepicker.js"></script>
 
+<!-- below tokenInput -->
+<link rel="stylesheet" href="/styles/token-input.css" type="text/css">
+<link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
+<script src="/js/jquery.tokeninput.js"></script>
+
 <form role="form" id="classForm" action="/class/creaupdate" method="post">
 	<% if (klass.id) { %>
 		<input name="id" type="hidden" value="<%= klass.id %>">
@@ -21,6 +26,32 @@
 		<input id="leng" name="leng" type="number" min="1" max="480" value="<%= klass.leng || '' %>" required>
 	</div>
 
+	<div class="form-group">
+		<label for="studentsForm">Choose Students</label><br>
+		<input id="studentsForm" name="studentsForm" type="text" required>
+		<div id="students">
+			
+		</div>
+		<script type="text/javascript">
+    $(document).ready(function() {
+        $("#studentsForm").tokenInput("/user/indexJSON", {
+            theme: "facebook",
+						preventDuplicates: true,
+						onAdd: function(item) {
+							console.log('added item: '+JSON.stringify(item));
+							var html = "<input name='studentId' value='"+item.id+"' "+
+													"type='hidden' id='uid-"+item.id+"'>";
+							$("#students").append(html);
+						},
+						onDelete: function(item) {
+							console.log('deleted item: '+JSON.stringify(item));
+							$("#students #uid-"+item.id).remove();
+						}
+        });
+    });
+		</script>
+	</div>
+	
 	<div class="form-group">
 		<label for="descr">Class Description</label><br>
 		<textarea id="descr" name="descr" form="classForm" cols="50" rows="4" required><%= klass.descr || '' %></textarea>

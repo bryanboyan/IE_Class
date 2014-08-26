@@ -35,6 +35,20 @@ module.exports = {
     });
   },
 
+  indexJSON: function(req, res) {
+    // some conditions
+
+    var cond = {};
+    User.find(cond, function(err, users) {
+      if (err) {
+        sails.log.error('UserController > indexJSON: user find error:'+JSON.stringify(err));
+        return res.json(500);
+      }
+
+      res.json(users);
+    });
+  },
+
   retrieveInfo: function(req, res) {
     var msgPref = "UserController > retrieveInfo: ";
 
