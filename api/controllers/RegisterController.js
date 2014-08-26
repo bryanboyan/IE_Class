@@ -51,7 +51,6 @@ module.exports = {
     var userId = req.param('userId');
     var type = req.param('type');
     var email = req.param('email');
-    sails.log.debug("userId:"+userId+', type:'+type+', email:'+email);
 
     var currTs = Date.now();
 
@@ -69,8 +68,11 @@ module.exports = {
     });
 
     fns.push(function(cb) {
-      // TODO send email
-      cb();
+      MailService.sendRegisterMail(email, currTs, function(err) {
+        if (err) return cb(500);
+
+        cb();
+      });
     });
 
     async.parallel(fns, function(errNo) {

@@ -84,7 +84,7 @@ module.exports = {
     var code = req.param('c');
     if (!code) {
       sails.log.error(msgPref+'no register code provided');
-      return res.view('403.ejs');
+      return res.view('403.ejs', {message: 'wrong URL!!'});
     }
 
     Register.findOne({id:code}, function(err, register) {
@@ -95,7 +95,7 @@ module.exports = {
 
       if (!register) {
         sails.log.error(msgPref+'no register code exist'+JSON.stringify(err));
-        return res.view('403.ejs');
+        return res.view('403.ejs', {message: 'URL not right'});
       }
 
       var user = {
