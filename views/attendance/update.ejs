@@ -1,0 +1,42 @@
+<h1>Enrollment Update</h1>
+
+<!-- below tokenInput -->
+<link rel="stylesheet" href="/styles/token-input.css" type="text/css">
+<link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
+<script src="/js/jquery.tokeninput.js"></script>
+
+<p>Please note that students added here will be mailed directly without confirm, and students deleted here will not see this class in class list</p>
+
+<div class="form-group">
+	<label for="studentsForm">Add or Delete Students</label><br>
+	<input id="studentsForm" name="studentsForm" type="text" required>
+	<script type="text/javascript">
+  $(document).ready(function() {
+		var classId = <%= klass.id %>;
+		$.get('/attendance/classmates?classId='+classId, function(attendances) {
+			console.log('attendances: '+JSON.stringify(attendances));
+			$("#studentsForm").tokenInput("/user/indexJSON", {
+				theme: "facebook",
+				preventDuplicates: true,
+				prePopulate: attendances,
+				onAdd: function(item) {
+					console.log('going to add '+JSON.stringify(item));
+					$.post('/attendance/new', 
+									{classId:classId, userId:item.id, userName:item.name}, 
+									function(data) {
+										console.log('added new item, res:'+JSON.stringify(data));
+					});
+				},
+				onDelete: function(item) {
+					console.log('deleted item: '+JSON.stringify(item));
+					$.post('/attendance/delete', {classId:classId, userId:item.id}, function(data) {
+										console.log('deleted new item, res:'+JSON.stringify(data));
+					});
+				}
+			});
+		});
+  });
+	</script>
+</div>
+
+<a href="/class" class="btn btn-info">DONE</a>

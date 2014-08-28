@@ -4,11 +4,6 @@
 <link rel="stylesheet" type="text/css" href="/styles/jquery.datetimepicker.css">
 <script src="/js/jquery.datetimepicker.js"></script>
 
-<!-- below tokenInput -->
-<link rel="stylesheet" href="/styles/token-input.css" type="text/css">
-<link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
-<script src="/js/jquery.tokeninput.js"></script>
-
 <form role="form" id="classForm" action="/class/creaupdate" method="post">
 	<% if (klass.id) { %>
 		<input name="id" type="hidden" value="<%= klass.id %>">
@@ -18,38 +13,14 @@
 		<input id="name" name="name" type="text" value="<%= klass.name || '' %>" required>
 	</div>
 
-	<label for="startAt">Start At</label><br>
-	<input type="datetime" id="startAt" name="startAt" value="<%= klass.startAt || '' %>" required>
+	<div class="form-group">
+		<label for="startAt">Start At</label><br>
+		<input type="datetime" id="startAt" name="startAt" value="<%= klass.startAt || '' %>" required>
+	</div>
 
 	<div class="form-group">
 		<label for="leng">Class Length (minutes)</label><br>
 		<input id="leng" name="leng" type="number" min="1" max="480" value="<%= klass.leng || '' %>" required>
-	</div>
-
-	<div class="form-group">
-		<label for="studentsForm">Choose Students</label><br>
-		<input id="studentsForm" name="studentsForm" type="text" required>
-		<div id="students">
-			
-		</div>
-		<script type="text/javascript">
-    $(document).ready(function() {
-        $("#studentsForm").tokenInput("/user/indexJSON", {
-            theme: "facebook",
-						preventDuplicates: true,
-						onAdd: function(item) {
-							console.log('added item: '+JSON.stringify(item));
-							var html = "<input name='studentId' value='"+item.id+"' "+
-													"type='hidden' id='uid-"+item.id+"'>";
-							$("#students").append(html);
-						},
-						onDelete: function(item) {
-							console.log('deleted item: '+JSON.stringify(item));
-							$("#students #uid-"+item.id).remove();
-						}
-        });
-    });
-		</script>
 	</div>
 	
 	<div class="form-group">
@@ -66,7 +37,7 @@
 		</select>
 	</div>
 
-	<button type="submit" class="btn btn-primary">Submit</button>
+	<button type="submit" class="btn btn-primary">Confirm and Choose Students</button>
 </form>
 
 <script type="text/javascript">

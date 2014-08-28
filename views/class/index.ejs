@@ -1,6 +1,6 @@
 <h1>Classes</h1>
 
-<table class="table">
+<table class="table" id="table">
 	<thead>
 		<tr>
 			<th>#</th>
@@ -24,11 +24,24 @@
 				<span class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
 			</td>
 			<td>
+				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
 				<a href="/class/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
 				<a href="/class/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
 			</td>
 		</tr>
+		<tr class="students" id="class-<%= c.id %>">
+			<td colspan=6>
+				<div class="panel-body">
+					
+				</div>
+			</td>
+			<td class="action">
+			</td>
+		</tr>
 		<% } %>
+		<script type="text/javascript">
+		$(".students").hide();	// hide the students row
+		</script>
 	</tbody>
 </table>
 
@@ -40,4 +53,34 @@
 	$(".classStatus[value=1]").addClass("label label-info");			// pending
 	$(".classStatus[value=2]").addClass("label label-success");		// confirmed
 	$(".classStatus[value=3]").addClass("label label-default");		// finished
+	
+	$(".showStudents").click(function() {
+		var ref = this.href;
+		var tgt = ref.replace(/.*#/,'#');
+		var classId = tgt.replace(/#class-/,'');
+		classId = parseInt(classId);
+		console.log('classId: '+classId);
+		
+		$.get('/attendance/classmates?classId='+classId, function(attendances) {
+			var html = "<ul>";
+			for (var i=0; i<attendances.length; ++i) {
+				var r = attendances[i];
+				html += "<li>"+r.name+"</li>";
+			}
+			html += "</ul>";
+			var tgtCnt = $(tgt+" div");
+			tgtCnt.html(html);
+			
+			var tgtBtn = $(tgt+" .action");
+			html = "<a href='/ACTION' class='btn btn-default'>Choose Student</a>"
+			if (attendances.length) {	// attendance length > 0
+				html = "<a href='/attendance/edit?classId="+classId+"' class='btn btn-default'>Edit Students</a>";
+			} else {		// attendance length 0
+				html = "<a href='/attendance/start?classId="+classId+"' class='btn btn-default'>Choose Students</a>"
+			}
+			tgtBtn.html(html);
+			
+			$(tgt).toggle();
+		});
+	});
 </script>

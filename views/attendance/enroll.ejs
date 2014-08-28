@@ -1,0 +1,41 @@
+<h1>Enrollment</h1>
+
+<!-- below tokenInput -->
+<link rel="stylesheet" href="/styles/token-input.css" type="text/css">
+<link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
+<script src="/js/jquery.tokeninput.js"></script>
+
+<form id="attendanceForm" roll="form" action="/attendance/enroll" method="post" accept-charset="utf-8">
+	<input type="hidden" name="classId" value="<%= klass.id %>">
+	
+	<div class="form-group">
+		<label for="studentsForm">Choose Students</label><br>
+		<input id="studentsForm" name="studentsForm" type="text" required>
+		<div id="students">
+			
+		</div>
+		<script type="text/javascript">
+    $(document).ready(function() {
+        $("#studentsForm").tokenInput("/user/indexJSON", {
+            theme: "facebook",
+						preventDuplicates: true,
+						onAdd: function(item) {
+							console.log('added item: '+JSON.stringify(item));
+							var html = "<input name='studentId' value='"+item.id+"' "+
+													"type='hidden' id='uid-"+item.id+"'>"+
+													"<input name='studentName' value='"+item.name+"' "+
+													"type='hidden' id='uname-"+item.id+"'>";
+							$("#students").append(html);
+						},
+						onDelete: function(item) {
+							console.log('deleted item: '+JSON.stringify(item));
+							$("#students #uid-"+item.id).remove();
+							$("#students #uname-"+item.id).remove();
+						}
+        });
+    });
+		</script>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Confirm and Send Notifications</button>
+</form>

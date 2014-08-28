@@ -89,8 +89,6 @@ module.exports = {
     var status = req.param('status');
     status = parseInt(status);
 
-    // TODO deal with studentIds
-
     sails.log.info('id:'+id+', name:'+name+', startAt:'+startAt+', length:'+leng+', description:'+descr);
 
     if (isFinite(id)) { // update
@@ -130,13 +128,14 @@ module.exports = {
     } else {  // create
       // trust the params b/c it will be validated on client side.
       var initStatus = Class.constants.STATUS.INIT;
-      Class.create({name:name, leng:leng, startAt:startAt, descr:descr, status:initStatus}, function(err) {
+      Class.create({name:name, leng:leng, startAt:startAt, descr:descr, status:initStatus}, function(err, newClass) {
         if (err) {
           sails.log.error(msgPref+'create class error:'+JSON.stringify(err));
           return res.view('500.ejs');
         }
 
-        res.redirect('/class');
+        // after create, the next is to choose students
+        res.view('attendance/enroll', {klass: newClass});
       });
     }
   },

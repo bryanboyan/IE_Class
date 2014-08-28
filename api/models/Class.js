@@ -12,6 +12,7 @@ module.exports = {
 //    id: 'integer',        // id of class  blank for sails to build it with auto-increment
     name: 'string',       // name of the class (init with definition name)
     descr: 'text',        // desc of the class (init with definition desc)
+    defId: 'integer',     // class definition id.
     startAt: 'datetime',  // start date time
     leng: 'integer',      // class duration
     status: 'integer',    // status of the class
