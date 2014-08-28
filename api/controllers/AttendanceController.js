@@ -30,15 +30,30 @@ module.exports = {
   my: function(req, res) {
     var msgPref = 'AttendanceController > my: ';
     var id = req.session.userId;
-    Attendance.find({userId:id}, function(err, classes) {
+    var tag = req.param('tag');
+    tag = tag.toLowerCase();
+
+    var query = "select c.id as id, c.name as name, c.startAt as startAt, " +
+                "c.leng as leng, c.descr as descr, a.reply as reply " +
+                "from class c,attendance a where c.id=a.classId";
+    switch(tag) {
+      case "following":
+        query += " and c.status != "+Class.constants.STATUS.FINISHED+" and c.status != "+Class.constants.STATUS.INIT;
+        break;
+      case "past":
+        query += " and c.status = "+Class.constants.STATUS.FINISHED;
+        break;
+    }
+
+    query += " and a.userId="+id;
+
+    Attendance.query(query, function(err, classes) {
       if (err) {
         sails.log.error(msgPref + 'find err:'+JSON.stringify(err));
         return res.view('500.ejs');
       }
 
-
-
-      res.view('')
+      res.view('class/my', {classes: classes, tag: tag});
     });
   },
 
@@ -127,7 +142,7 @@ module.exports = {
           userId: sid,
           userName: name,
           defId: klass.defId,
-          status: Attendance.constants.STATUS.PENDING
+          status: Attendance.constants.REPLY.PENDING
         });
       }
       sails.log.debug(msgPref + 'records:'+JSON.stringify(records));
@@ -152,13 +167,13 @@ module.exports = {
     });
   },
 
-  updateStatus: function(req, res) {
+  reply: function(req, res) {
     var msgPref = "AttendanceController > new: ";
     var classId = req.param('classId');
-    var userId = req.param('userId');
+    var userId = req.session.userId;
     var verb = req.param('verb');
     verb = verb.toUpperCase();
-    var stat = Attendance.constants.STATUS[verb];
+    var reply = Attendance.constants.REPLY[verb];
 
     Attendance.findOne({classId:classId, userId:userId}, function(err,attendance) {
       if (err) {
@@ -173,16 +188,16 @@ module.exports = {
 
       var eMsg;
       switch(attendance.status) {
-        case Attendance.constants.STATUS.PENDING:
+        case Attendance.constants.REPLY.PENDING:
           // no problem with this
           break;
-        case Attendance.constants.STATUS.OK:
+        case Attendance.constants.REPLY.OK:
           // can not change to other status, error
-          eMsg = 'Can not change status from OK to others';
+          eMsg = 'Can not change status from OK to other';
           break;
-        case Attendance.constants.STATUS.REFUSE:
+        case Attendance.constants.REPLY.REFUSE:
           // can only be changed to OK
-          if (stat != Attendance.constants.STATUS.OK) {
+          if (reply != Attendance.constants.REPLY.OK) {
             eMsg = 'Can not change status from Refuse to non-OK status';
           }
           break;
@@ -192,14 +207,15 @@ module.exports = {
         return res.view('403.ejs',{message:eMsg});
       }
 
-      attendance.status = stat;
+      attendance.reply = reply;
+      sails.log.debug('attendance: '+JSON.stringify(attendance));
       attendance.save(function(err) {
         if (err) {
           sails.log.error(msgPref+'attendance save error:'+JSON.stringify(err));
           return res.view('500.ejs');
         }
 
-        res.view();
+        res.redirect('/attendance/my/following');
       });
     });
   },
@@ -237,7 +253,7 @@ module.exports = {
         userId: userId,
         userName: userName,
         defId: klass.defId,
-        status: Attendance.constants.STATUS.PENDING
+        status: Attendance.constants.REPLY.PENDING
       };
       Attendance.create(record, function(err) {
         if (err) {

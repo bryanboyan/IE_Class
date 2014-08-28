@@ -1,6 +1,6 @@
 <h1>Classes</h1>
 
-<table class="table">
+<table class="table" id="table">
 	<thead>
 		<tr>
 			<th>#</th>
@@ -9,11 +9,12 @@
 			<th>length (min)</th>
 			<th>description</th>
 			<th>status</th>
+			<th>reply</th>
 			<th>ACTIONS</th>
 		</tr>
 	</thead>
 	<tbody>
-		<% for (var i=0; i<klasses.length; ++i) { var c = klasses[i]; %>
+		<% for (var i=0; i<classes.length; ++i) { var c = classes[i]; %>
 		<tr>
 			<td><%- c.id %></td>
 			<td><%- c.name %></td>
@@ -24,15 +25,20 @@
 				<span class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
 			</td>
 			<td>
-				<a href="/class/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
-				<a href="/class/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
+				<span class="classReply" value="<%= c.reply %>"><%= Attendance.constants.REPLY_NUM[c.reply] %></span>
+			</td>
+			<td>
+				<% if (c.reply==Attendance.constants.REPLY.PENDING) { %>
+					<a href="/attendance/reply/ok?classId=<%=c.id%>" class="btn btn-primary">Attend</a>
+					<a href="/attendance/reply/refuse?classId=<%=c.id%>" class="btn btn-danger">Refuse</a>
+				<% } else if (c.reply == Attendance.constants.REPLY.REFUSE) {%>
+					<a href="/attendance/reply/ok?classId=<%=c.id%>" class="btn btn-primary">Attend</a>
+				<% } %>
 			</td>
 		</tr>
 		<% } %>
 	</tbody>
 </table>
-
-<a href="/definition" class="btn btn-default">Create Class (To Definition List)</a>
 
 <script type="text/javascript">
 	// add colors for each status

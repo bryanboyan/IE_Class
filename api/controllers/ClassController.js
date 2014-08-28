@@ -18,13 +18,13 @@
 module.exports = {
     
   index: function(req, res) {
-    Class.find({},function(err, klasses) {
+    Class.find({},function(err, classes) {
       if (err) {
         sails.log.error('ClassController > index error:'+err);
         return res.view('500.ejs');
       }
 
-      res.view('class/index', {klasses: klasses});
+      res.view('class/index', {classes: classes});
     });
   },
 
@@ -77,6 +77,39 @@ module.exports = {
     });
   },
 
+  status: function(req, res) {
+    var msgPref = 'ClassController > status: ';
+
+    var id = req.param('id');
+    var verb = req.param('verb');
+    verb = verb.toUpperCase();
+    var newStat = Class.constants.STATUS[verb];
+    if (isNaN(newStat)) {
+      sails.log.error(msgPref+'new status wrong');
+      return res.view('403.ejs');
+    }
+
+    Class.findOne(id, function(err, klass) {
+      if (err) {
+        sails.log.error(msgPref+'error:'+JSON.stringify(err));
+        return res.send(500);
+      }
+
+      if (!klass) {
+        sails.log.error(msgPref+'find no class');
+        return res.send(400);
+      }
+
+      var errMsg = statusTransfer(klass, newStat);
+      if (errMsg) {
+        sails.log.error(msgPref+errMsg);
+        return res.send(403);
+      }
+
+      res.send(200);
+    });
+  },
+
   $createOrUpdate: function(req, res) {
     var msgPref = 'ClassController > $createOrUpdate: ';
     var id = req.param('id');
@@ -109,7 +142,12 @@ module.exports = {
         klass.leng = leng;
         klass.startAt = startAt;
         klass.descr= descr;
-        klass.status = status;
+
+        var errMsg = statusTransfer(klass, status);
+        if (errMsg) {
+          sails.log.error(msgPref+errMsg);
+          return res.view('403.ejs', {message: errMsg});
+        }
 
         sails.log.debug('before save, dump klass:'+JSON.stringify(klass));
 
@@ -163,6 +201,30 @@ module.exports = {
    * (specific to ClassController)
    */
   _config: {}
-
-  
 };
+
+/**
+ * check whether the klass's current status can be transfer to newStat
+ * @param {Class} klass
+ * @param {Number} newStat
+ * @return {String|null} errMsg
+ */
+function statusTransfer(klass, newStat) {
+  var statConst = Class.constants.STATUS;
+  var errMsg = null;
+  switch(klass.status) {
+    case statConst.INIT:
+      break;
+    case statConst.PENDING:
+      break;
+    case statConst.CONFIRMED:
+      break;
+    case statConst.FINISHED:
+      errMsg = 'Can not transfer a finished class status to other';
+      break;
+  }
+
+  if (!errMsg) klass.status = newStat;
+
+  return errMsg;
+}
