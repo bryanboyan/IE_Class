@@ -51,6 +51,7 @@ module.exports.routes = {
   'get /user/retrieveInfo': 'UserController.retrieveInfo',
 
   '/class/status/:verb': 'ClassController.status',
+  '/class/index/:tag': 'ClassController.index',
   'post /class/creaupdate': 'ClassController.$createOrUpdate',
 
   'get /attendance/my/:tag': 'AttendanceController.my',

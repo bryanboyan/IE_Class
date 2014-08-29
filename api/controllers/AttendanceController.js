@@ -34,7 +34,7 @@ module.exports = {
     tag = tag.toLowerCase();
 
     var query = "select c.id as id, c.name as name, c.startAt as startAt, " +
-                "c.leng as leng, c.descr as descr, a.reply as reply " +
+                "c.leng as leng, c.descr as descr, c.status as status, a.reply as reply " +
                 "from class c,attendance a where c.id=a.classId";
     switch(tag) {
       case "following":
@@ -72,7 +72,7 @@ module.exports = {
       attendances.forEach(function(atdc) {
         atdc.name = atdc.userName;
       });
-      res.json(attendances);
+      res.json({attendances:attendances, attendanceConst:Attendance.constants, classConst:Class.constants});
     });
   },
 

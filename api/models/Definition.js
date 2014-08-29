@@ -13,6 +13,7 @@ module.exports = {
     name: 'string',       // class definition name
     descr: 'text',        // class definition desc
     leng: 'integer',      // class length in minutes
+    price: 'integer',     // price for a class
     teacherId:'integer',  // teacherId
     cond: 'string'        // class conditions for students, such as "preId:4,2,10;levelReq:3;"
   }

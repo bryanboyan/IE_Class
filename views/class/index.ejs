@@ -7,6 +7,7 @@
 			<th>name</th>
 			<th>startAt</th>
 			<th>length (min)</th>
+			<th>price</th>
 			<th>description</th>
 			<th>status</th>
 			<th>ACTIONS</th>
@@ -19,21 +20,35 @@
 			<td><%- c.name %></td>
 			<td><div class="china_time"><%= c.startAt %></div</td>
 			<td><%- c.leng %></td>
+			<td><%- c.price %></td>
 			<td><%- c.descr %></td>
 			<td>
-				<span class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
+				<span id="classStatus-<%- c.id %>" class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
 			</td>
 			<td>
+				<% if (c.status == Class.constants.STATUS.INIT) { %>
+					<a href="/class/status/open?id=<%- c.id %>" class="btn btn-primary">OPEN</a>
+				<% } else if (c.status == Class.constants.STATUS.CONFIRM) {%>
+					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISHED</a>
+				<% } %>
 				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
 				<a href="/class/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
-				<a href="/class/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
 			</td>
 		</tr>
 		<tr class="students" id="class-<%= c.id %>">
-			<td colspan=6>
-				<div class="panel-body">
-					
-				</div>
+			<td></td>
+			<td colspan=5>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Reply</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</td>
 			<td class="action">
 			</td>
@@ -48,11 +63,8 @@
 <a href="/definition" class="btn btn-default">Create Class (To Definition List)</a>
 
 <script type="text/javascript">
-	// add colors for each status
-	$(".classStatus[value=0]").addClass("label label-warning");		// init
-	$(".classStatus[value=1]").addClass("label label-info");			// pending
-	$(".classStatus[value=2]").addClass("label label-success");		// confirmed
-	$(".classStatus[value=3]").addClass("label label-default");		// finished
+	
+	var dataFillObj = {};
 	
 	$(".showStudents").click(function() {
 		var ref = this.href;
@@ -61,26 +73,68 @@
 		classId = parseInt(classId);
 		console.log('classId: '+classId);
 		
-		$.get('/attendance/classmates?classId='+classId, function(attendances) {
-			var html = "<ul>";
-			for (var i=0; i<attendances.length; ++i) {
-				var r = attendances[i];
-				html += "<li>"+r.name+"</li>";
-			}
-			html += "</ul>";
-			var tgtCnt = $(tgt+" div");
-			tgtCnt.html(html);
-			
-			var tgtBtn = $(tgt+" .action");
-			html = "<a href='/ACTION' class='btn btn-default'>Choose Student</a>"
-			if (attendances.length) {	// attendance length > 0
-				html = "<a href='/attendance/edit?classId="+classId+"' class='btn btn-default'>Edit Students</a>";
-			} else {		// attendance length 0
-				html = "<a href='/attendance/start?classId="+classId+"' class='btn btn-default'>Choose Students</a>"
-			}
-			tgtBtn.html(html);
-			
+		var classStatus = $("#classStatus-"+classId).attr("value");
+		classStatus = parseInt(classStatus);
+		console.log('classStatus: '+classStatus);
+		
+		// if already fetched data from server, no need to fetch again
+		if (dataFillObj[classId]) {
+			console.log('get from local');
 			$(tgt).toggle();
-		});
+		
+		} else {
+			$.get('/attendance/classmates?classId='+classId, function(data) {
+				console.log('get from server');
+				var attendances = data.attendances;
+				var attendanceConst = data.attendanceConst;
+				var classConst = data.classConst;
+				
+				var html = "", attenders = 0;
+				for (var i=0; i<attendances.length; ++i) {
+					var r = attendances[i];
+					html += 
+						"<tr>"+
+						"<td class='studentLink'>"+r.userId+"</td>"+
+						"<td class='studentLink'>"+r.userName+"</td>"+
+						"<td><span class='classReply' value="+r.reply+">"+
+							attendanceConst.REPLY_NUM[r.reply]+"</span></td>"+
+						"</tr>";
+					
+					if (r.reply == attendanceConst.REPLY.OK) attenders++;
+				}
+				var tgtCnt = $(tgt+" tbody");
+				tgtCnt.html(html);
+				
+				var allConfirmed;
+				if (attenders == attendances.length) allConfirmed=true;
+				
+				$(".classReply[value=0]").addClass("label label-info");
+				$(".classReply[value=1]").addClass("label label-success");
+				$(".classReply[value=2]").addClass("label label-danger");
+			
+				var tgtBtn = $(tgt+" .action");
+				// if there are students and it is not confirmed, show buttons.
+				html = "";
+				if (attendances.length) {	
+					if (classStatus!=classConst.STATUS.CONFIRM) {
+						html = "<a href='/attendance/edit?classId="+classId+
+									"' class='btn btn-primary'>Edit Students</a>";
+						if (allConfirmed) {
+							html += "<a href='/class/status/confirm?id="+classId+
+											"' class='btn btn-success'>Confirm Class</a>";
+						}
+					}
+
+				} else {		// attendance length 0
+					html = "<a href='/attendance/start?classId="+classId+"' class='btn btn-warning'>Choose Students</a>"
+				}
+				tgtBtn.html(html);
+				
+				dataFillObj[classId] = true;
+			
+				$(tgt).toggle();
+			});
+		}
+		
 	});
 </script>

@@ -20,7 +20,12 @@
 
 	<div class="form-group">
 		<label for="leng">Class Length (minutes)</label><br>
-		<input id="leng" name="leng" type="number" min="1" max="480" value="<%= klass.leng || '' %>" required>
+		<input id="leng" name="leng" type="number" min="1" value="<%= klass.leng || '' %>" required>
+	</div>
+	
+	<div class="form-group">
+		<label for="price">Class Length (minutes)</label><br>
+		<input id="price" name="price" type="number" value="<%= klass.price || '' %>" required>
 	</div>
 	
 	<div class="form-group">
@@ -32,12 +37,21 @@
 		<label for="status">Class Status</label><br>
 		<select name="status">
 			<% for (var key in Class.constants.STATUS) { var stat=Class.constants.STATUS[key]; %>
-			<option value="<%= stat %>" <%if (stat==klass.status) {%> selected <%}%> ><%= key %></option>
+				<option value="<%= stat %>" <%if (stat==klass.status) {%> selected <%}%> ><%= key %></option>
 			<% } %>
 		</select>
 	</div>
 
-	<button type="submit" class="btn btn-primary">Confirm and Choose Students</button>
+	<% if (klass.id) { %>
+		<table class="table">
+			<tr>
+				<td><button type="submit" class="btn btn-primary">Update Class</button></td>
+				<td><a href="/class/destroy?id=<%- klass.id %>" class="btn btn-danger">DELETE</a></td>
+			</tr>
+		</table>
+	<% } else { %>
+		<button type="submit" class="btn btn-primary">Confirm and Choose Students</button>
+	<% } %>
 </form>
 
 <script type="text/javascript">

@@ -15,10 +15,26 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var async = require('async');
+
 module.exports = {
     
   index: function(req, res) {
-    Class.find({},function(err, classes) {
+    var tag = req.param('tag');
+    tag = tag || "";
+    tag = tag.toLowerCase();
+    var query = {};
+    switch(tag) {
+      case "past":
+        query.status = Class.constants.STATUS.FINISHED;
+        break;
+      case "following":
+      default:
+        query.status = {"!": Class.constants.STATUS.FINISHED};
+        break;
+    }
+
+    Class.find(query,function(err, classes) {
       if (err) {
         sails.log.error('ClassController > index error:'+err);
         return res.view('500.ejs');
@@ -91,22 +107,46 @@ module.exports = {
 
     Class.findOne(id, function(err, klass) {
       if (err) {
-        sails.log.error(msgPref+'error:'+JSON.stringify(err));
-        return res.send(500);
+        sails.log.error(msgPref+'findOne class error:'+JSON.stringify(err));
+        return res.view('500.ejs');
       }
 
       if (!klass) {
         sails.log.error(msgPref+'find no class');
-        return res.send(400);
+        return res.view('404.ejs');
       }
 
       var errMsg = statusTransfer(klass, newStat);
       if (errMsg) {
         sails.log.error(msgPref+errMsg);
-        return res.send(403);
+        return res.view('403.ejs');
       }
 
-      res.send(200);
+      var fns = [];
+      if (newStat == Class.constants.STATUS.FINISHED) {
+        fns.push(function(cb) {
+          closeTransaction(klass, cb);
+        });
+      }
+
+      fns.push(function(cb) {
+        klass.save(function(err) {
+          if (err) {
+            sails.log.error(msgPref+'save klass error:'+JSON.stringify(err));
+            return cb(500);
+          }
+
+          cb();
+        });
+      });
+
+      async.parallel(fns, function(errNo) {
+        if (errNo) {
+          return res.view(errNo+'.ejs');
+        }
+
+        res.redirect('/class'); // following class
+      });
     });
   },
 
@@ -149,16 +189,28 @@ module.exports = {
           return res.view('403.ejs', {message: errMsg});
         }
 
-        sails.log.debug('before save, dump klass:'+JSON.stringify(klass));
+        var fns = [];
+        if (status == Class.constants.STATUS.FINISHED) {
+          fns.push(function(cb) {
+            closeTransaction(klass, cb);
+          });
+        }
 
-        klass.save(function(err, updatedDoc) {
-          if (err) {
-            sails.log.error(msgPref+'save error: '+JSON.stringify(err));
-            return res.view('500.ejs');
+        fns.push(function(cb) {
+          klass.save(function(err) {
+            if (err) {
+              sails.log.error(msgPref+'save klass error:'+JSON.stringify(err));
+              return cb(500);
+            }
+
+            cb();
+          });
+        });
+
+        async.parallel(fns, function(errNo) {
+          if (errNo) {
+            return res.view(errNo+'.ejs');
           }
-
-          sails.log.info('updatedDoc is '+JSON.stringify(updatedDoc));
-
           res.redirect('/class');
         });
       });
@@ -215,9 +267,9 @@ function statusTransfer(klass, newStat) {
   switch(klass.status) {
     case statConst.INIT:
       break;
-    case statConst.PENDING:
+    case statConst.OPEN:
       break;
-    case statConst.CONFIRMED:
+    case statConst.CONFIRM:
       break;
     case statConst.FINISHED:
       errMsg = 'Can not transfer a finished class status to other';
@@ -227,4 +279,35 @@ function statusTransfer(klass, newStat) {
   if (!errMsg) klass.status = newStat;
 
   return errMsg;
+}
+
+/**
+ * payment transaction close. Do credit cost based on class price.
+ * @param {Class} klass
+ * @param cb
+ */
+function closeTransaction(klass, cb) {
+  var msgPref = "ClassController > closeTransaction ";
+  var classId = klass.id;
+  var price = klass.price;
+  Attendance.find({classId: classId, reply: Attendance.constants.REPLY.OK}, function(err, attendances) {
+    if (err) {
+      sails.log.error(msgPref+'find attendance err:'+JSON.stringify(err));
+      return cb(500);
+    }
+    attendances = attendances || [];
+
+    var ids = _.map(attendances, function(a){ return a.userId; });
+    var idStr = "(" + ids.join(",") + ")";
+    var query = "update user set credit=credit-"+price+" where id in "+idStr;
+
+    Attendance.query(query, function(err) {
+      if (err) {
+        sails.log.error(msgPref+'update credit error:'+JSON.stringify(err));
+        return cb(500);
+      }
+
+      cb();
+    });
+  });
 }

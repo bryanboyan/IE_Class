@@ -96,7 +96,13 @@
 		<div id="teacher_view" class="menu_template">
       <ul class="nav navbar-nav">
         <li><a href="/user/my" id="my-name">My Page</a></li>
-        <li><a href="/class">Classes</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Classes <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/class/index/following">Following</a></li>
+            <li><a href="/class/index/past">Past</a></li>
+          </ul>
+        </li>
         <li><a href="/definition">Definitions</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">User <span class="caret"></span></a>
@@ -224,4 +230,16 @@
     -->
 
     </body>
+		<script type="text/javascript">
+			// add colors for each status
+			$(".classStatus[value=0]").addClass("label label-warning");		// init
+			$(".classStatus[value=1]").addClass("label label-info");			// pending
+			$(".classStatus[value=2]").addClass("label label-success");		// confirmed
+			$(".classStatus[value=3]").addClass("label label-default");		// finished
+	
+			// add colors for student replies
+			$(".classReply[value=0]").addClass("label label-info");
+			$(".classReply[value=1]").addClass("label label-success");
+			$(".classReply[value=2]").addClass("label label-danger");
+		</script>
 </html>

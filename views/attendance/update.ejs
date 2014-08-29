@@ -13,7 +13,8 @@
 	<script type="text/javascript">
   $(document).ready(function() {
 		var classId = <%= klass.id %>;
-		$.get('/attendance/classmates?classId='+classId, function(attendances) {
+		$.get('/attendance/classmates?classId='+classId, function(data) {
+			var attendances = data.attendances;
 			console.log('attendances: '+JSON.stringify(attendances));
 			$("#studentsForm").tokenInput("/user/indexJSON", {
 				theme: "facebook",
