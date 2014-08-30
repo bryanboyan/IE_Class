@@ -36,17 +36,17 @@ module.exports = {
     });
   },
 
-  indexJSON: function(req, res) {
-    // some conditions
-
-    var cond = {};
+  searchName: function(req, res) {
+    var name = req.param('q');
+    sails.log.debug('name is '+name);
+    var cond = {name: {'like':name}};
     User.find(cond, function(err, users) {
       if (err) {
-        sails.log.error('UserController > indexJSON: user find error:'+JSON.stringify(err));
+        sails.log.error('UserController > searchName: user find error:'+JSON.stringify(err));
         return res.json(500);
       }
 
-      res.json(users);
+      res.json(users)
     });
   },
 
@@ -88,11 +88,6 @@ module.exports = {
   profile: function(req, res) {
     _renderUser(req, res, 'user/my');
   },
-
-//  new: function(req, res) {
-//    // 根据code来检验是否有效
-//    res.view('user/form', {user: {}});
-//  },
 
   register: function(req, res) {
     var msgPref = 'UserController > register: ';
@@ -211,30 +206,49 @@ module.exports = {
   },
 
   checkExistence: function(req, res) {
+    var msgPref = "UserController > checkExistence: ";
     var key = req.param('key');
     var value = req.param('value');
 
-    var rKey;
+    var uid = req.session.userId;
+    var uName = req.session.name;
+
+    var rKey, myself=false;
     switch(key) {
       case "userId":
       case "id":
         rKey = "id";
         value = parseInt(value);
         if (!isFinite(value)) {
-
+          return res.json({err:'value invalid'});
+        }
+        if (uid == value) {
+          myself = true;
         }
         break;
       case "userName":
       case "name":
         rKey = 'name';
+        if (value == uName) {
+          myself = true;
+        } else {
+          value = '"'+value+'"';
+        }
         break;
       default:
-
     }
 
-    User.query('select 1 from user where '+rKey+'='+value, function(err, rst) {
-      if (err) {
+    if (myself) {
+      // myself, no duplicate confirmed
+      return res.json({exist:false});
+    }
 
+    var query = 'select 1 from user where '+rKey+'='+value;
+    sails.log.debug('rkey is '+rKey+', value:'+value+', query:'+query);
+    User.query(query, function(err, rst) {
+      if (err) {
+        sails.log.error(msgPref+'user find err:'+JSON.stringify(err));
+        return res.view('500.ejs');
       }
 
       rst = rst || [];
@@ -242,10 +256,6 @@ module.exports = {
       res.json({exist: exist});
     });
   },
-
-//  $edit: function(req, res) {
-//    this._renderUser(req, res, 'user/form');
-//  },
 
   editPhoto: function(req, res) {
     res.view('user/editPhoto.ejs');
@@ -260,13 +270,13 @@ module.exports = {
     if (!photo || !photo.size || !photo.name) {
       // error
       sails.log.error(msgPref+'no photo');
-      return res.view(403,{message:'no photo uploaded'});
+      return res.view('403.ejs',{message:'no photo uploaded'});
     }
 
     var ext = photo.name.match(/\.\w+$/);
     if (!ext) {
       sails.log.error(msgPref+'ext not match');
-      return res.view(403,{message:'photo format not right'});
+      return res.view('403.ejs',{message:'photo format not right'});
     }
     ext = ext[0];
     sails.log.debug('ext: '+ext);
@@ -333,12 +343,96 @@ module.exports = {
     });
   },
 
-  updateInfo: function(req, res) {
+  editInfo: function(req, res) {
+    var msgPref = 'UserController > editInfo: ';
+    var uid = req.session.userId;
+    User.findOne(uid, function(err, user) {
+      if (err) {
+        sails.log.error(msgPref+'photo uploaded err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+      if (!user) {
+        sails.log.error(msgPref+'user NA');
+        return res.view('404.ejs');
+      }
 
+      res.view('user/editInfo', {user:user});
+    });
+  },
+
+  updateInfo: function(req, res) {
+    var msgPref = 'UserController > updateInfo: ';
+    var uid = req.session.userId;
+
+    User.findOne(uid, function(err, user) {
+      if (err) {
+        sails.log.error(msgPref+'findOne err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+      if (!user) {
+        sails.log.error(msgPref+'user not found');
+        return res.view('404.ejs');
+      }
+
+      ['name','sex','email','phone','descr'].forEach(function(key) {
+        if (user[key] != req.param(key)) {
+          user[key] = req.param(key);
+        }
+      });
+
+      user.save(function(err) {
+        if (err) {
+          sails.log.error(msgPref+'user save err:'+JSON.stringify(err));
+          return res.view('500.ejs');
+        }
+        res.redirect('/user/my');
+      });
+    });
+  },
+
+  editPasswd: function(req, res) {
+    res.view('user/editPasswd');
   },
 
   updatePasswd: function(req, res) {
+    var msgPref = 'UserController > updatePasswd: ';
 
+    var oldPasswd = req.param('oldPasswd');
+    var passwd = req.param('passwd');
+
+    if (!oldPasswd || !passwd) {
+      sails.log.error(msgPref+'invalid parameter');
+      return res.view('403.ejs', {message:'invalid parameter'});
+    }
+
+    oldPasswd = crypto.createHash('md5').update(oldPasswd).digest('hex');
+    passwd = crypto.createHash('md5').update(passwd).digest('hex');
+
+    var uid = req.session.userId;
+    User.findOne(uid, function(err, user) {
+      if (err) {
+        sails.log.error(msgPref+'findOne err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+      if (!user) {
+        sails.log.error(msgPref+'user not found');
+        return res.view('404.ejs');
+      }
+
+      if (user.passwd != oldPasswd) {
+        sails.log.error(msgPref+'old password not match, input pw:'+oldPasswd+', old pw:'+user.passwd);
+        return res.view('403.ejs');
+      }
+
+      user.passwd = passwd;
+      user.save(function(err) {
+        if (err) {
+          sails.log.error(msgPref+'user save err:'+JSON.stringify(err));
+          return res.view('500.ejs');
+        }
+        res.redirect('/user/my');
+      });
+    });
   },
 
   $createOrUpdate: function(req, res) {
@@ -435,6 +529,8 @@ function _renderUser (req, res, page) {
     return res.view('403.ejs');
   }
   id = parseInt(id);
+  var uid = req.session.userId;
+  var myself = (uid == id);
 
   User.findOne({id:id}, function(err, user) {
     if (err) {
@@ -447,6 +543,6 @@ function _renderUser (req, res, page) {
       return res.view('404.ejs');
     }
 
-    res.view(page, {user: user});
+    res.view(page, {user: user, myself: myself});
   });
 }

@@ -8,18 +8,44 @@
 <p>Please note that students added here will be mailed directly without confirm, and students deleted here will not see this class in class list</p>
 
 <div class="form-group">
+	<label>
+	<input type="checkbox" name="credit" value="" id="credit">
+		Only search students whose credit can afford the price(<%= klass.price %>)
+	</label>
+</div>
+
+<div class="form-group">
 	<label for="studentsForm">Add or Delete Students</label><br>
 	<input id="studentsForm" name="studentsForm" type="text" required>
 	<script type="text/javascript">
   $(document).ready(function() {
+		var creditChk = $("#credit").prop('checked');
+		$("#credit").click(function() {
+			creditChk = $(this).prop('checked');
+		});
+		var price = $("#price").val();
+		price = parseInt(price);
+		console.log('price:',price);
+		
 		var classId = <%= klass.id %>;
+		classId = parseInt(classId);
 		$.get('/attendance/classmates?classId='+classId, function(data) {
 			var attendances = data.attendances;
 			console.log('attendances: '+JSON.stringify(attendances));
-			$("#studentsForm").tokenInput("/user/indexJSON", {
+			$("#studentsForm").tokenInput("/user/name/search", {
 				theme: "facebook",
 				preventDuplicates: true,
 				prePopulate: attendances,
+				onResult: function(results) {
+					console.log('checked creditChk:'+creditChk);
+					if (creditChk) {
+						results = $.grep(results, function(value, index) {
+							console.log('in grep, dump value:'+JSON.stringify(value));
+							return (value.credit >= price);
+						});
+					}
+					return results;
+				},
 				onAdd: function(item) {
 					console.log('going to add '+JSON.stringify(item));
 					$.post('/attendance/new', 

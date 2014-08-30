@@ -77,15 +77,36 @@ module.exports = {
   },
 
   edit: function(req, res) {
+    var msgPref = 'AttendanceContrller > edit: ';
     var classId = req.param('classId');
     classId = parseInt(classId);
-    res.view('attendance/update', {klass: {id: classId}});
+    Class.findOne(classId, function(err, klass) {
+      if (err) {
+        sails.log.error(msgPref+'class findOne err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+      if (!klass) {
+        sails.log.error(msgPref+'class NA');
+        return cb(404);
+      }
+      res.view('attendance/update', {klass: klass});
+    });
   },
 
   start: function(req, res) {
     var classId = req.param('classId');
     classId = parseInt(classId);
-    res.view('attendance/enroll', {klass: {id: classId}});
+    Class.findOne(classId, function(err, klass) {
+      if (err) {
+        sails.log.error(msgPref+'class findOne err:'+JSON.stringify(err));
+        return res.view('500.ejs');
+      }
+      if (!klass) {
+        sails.log.error(msgPref+'class NA');
+        return cb(404);
+      }
+      res.view('attendance/enroll', {klass: klass});
+    });
   },
 
   /**

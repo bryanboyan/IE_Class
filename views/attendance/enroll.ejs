@@ -1,5 +1,7 @@
 <h1>Enrollment</h1>
 
+<h2>Class: <%= klass.name %></h2>
+
 <!-- below tokenInput -->
 <link rel="stylesheet" href="/styles/token-input.css" type="text/css">
 <link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
@@ -7,32 +9,59 @@
 
 <form id="attendanceForm" roll="form" action="/attendance/enroll" method="post" accept-charset="utf-8">
 	<input type="hidden" name="classId" value="<%= klass.id %>">
+	<br />
+	
+	<div id="students">
+		
+	</div>
+	
+	<div class="form-group">
+		<label>
+		<input type="checkbox" name="credit" value="" id="credit">
+			Only search students whose credit can afford the price(<%= klass.price %>)
+		</label>
+	</div>
 	
 	<div class="form-group">
 		<label for="studentsForm">Choose Students</label><br>
-		<input id="studentsForm" name="studentsForm" type="text" required>
-		<div id="students">
-			
-		</div>
+		<input id="studentsForm" name="studentsForm" type="text" />
 		<script type="text/javascript">
     $(document).ready(function() {
-        $("#studentsForm").tokenInput("/user/indexJSON", {
-            theme: "facebook",
-						preventDuplicates: true,
-						onAdd: function(item) {
-							console.log('added item: '+JSON.stringify(item));
-							var html = "<input name='studentId' value='"+item.id+"' "+
-													"type='hidden' id='uid-"+item.id+"'>"+
-													"<input name='studentName' value='"+item.name+"' "+
-													"type='hidden' id='uname-"+item.id+"'>";
-							$("#students").append(html);
-						},
-						onDelete: function(item) {
-							console.log('deleted item: '+JSON.stringify(item));
-							$("#students #uid-"+item.id).remove();
-							$("#students #uname-"+item.id).remove();
-						}
-        });
+			var creditChk = $("#credit").prop('checked');
+			$("#credit").click(function() {
+				creditChk = $(this).prop('checked');
+			});
+			var price = <%= klass.price %>;
+			price = parseInt(price);
+			console.log('price:',price);
+			
+			$("#studentsForm").tokenInput("/user/name/search", {
+				theme: "facebook",
+				preventDuplicates: true,
+				onResult: function(results) {
+					console.log('checked creditChk:'+creditChk);
+					if (creditChk) {
+						results = $.grep(results, function(value, index) {
+							console.log('in grep, dump value:'+JSON.stringify(value));
+							return (value.credit >= price);
+						});
+					}
+					return results;
+				},
+				onAdd: function(item) {
+					console.log('added item: '+JSON.stringify(item));
+					var html = "<input name='studentId' value='"+item.id+"' "+
+					"type='hidden' id='uid-"+item.id+"'>"+
+					"<input name='studentName' value='"+item.name+"' "+
+					"type='hidden' id='uname-"+item.id+"'>";
+					$("#students").append(html);
+				},
+				onDelete: function(item) {
+					console.log('deleted item: '+JSON.stringify(item));
+					$("#students #uid-"+item.id).remove();
+					$("#students #uname-"+item.id).remove();
+				}
+			});
     });
 		</script>
 	</div>

@@ -1,10 +1,12 @@
 <h1>Edit Photo</h1>
 
-<form role="form" id="userForm" action="/user/updatePhoto" method="post" enctype="multipart/form-data">
+<form role="form" id="userForm" action="/user/photo/update" method="post" enctype="multipart/form-data">
 	<div class="form-group">
 		<label for="photo">Upload Your New photo (300x300 px)</label><br>
 		<input id="photo" name="photo" type="file" accept="image/*" required>
+		<p class="help-block">Please upload 300x300px jpg/png file</p>
 	</div>
 	
 	<button type="submit" class="btn btn-primary">Submit</button>
+	<a href="/user/my" class="btn btn-default">Cancel</a>
 </form>

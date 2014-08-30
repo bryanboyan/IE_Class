@@ -24,7 +24,7 @@
 	</div>
 	
 	<div class="form-group">
-		<label for="price">Class Length (minutes)</label><br>
+		<label for="price">Class Price</label><br>
 		<input id="price" name="price" type="number" value="<%= klass.price || '' %>" required>
 	</div>
 	
@@ -36,8 +36,13 @@
 	<div class="form-group">
 		<label for="status">Class Status</label><br>
 		<select name="status">
-			<% for (var key in Class.constants.STATUS) { var stat=Class.constants.STATUS[key]; %>
-				<option value="<%= stat %>" <%if (stat==klass.status) {%> selected <%}%> ><%= key %></option>
+			<% if (!klass.id) { %>
+				<option value="<%= Class.constants.STATUS.INIT %>" selected >INIT</option>
+			<% } else { %>
+				<% for (var key in Class.constants.STATUS) { var stat=Class.constants.STATUS[key]; %>
+				
+					<option value="<%= stat %>" <%if (stat==klass.status) {%> selected <%}%> ><%= key %></option>
+				<% } %>
 			<% } %>
 		</select>
 	</div>

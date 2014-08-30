@@ -35,5 +35,8 @@ module.exports = function(req, res, next) {
   next();
 };
 
-var studentPath = ['/','/user/my','/user/editPhoto','/user/updatePhoto',
-                    '/attendance/my/:tag','/attendance/reply/:verb','/charge/my'];
+var studentPath = [
+  '/','/user/my','/user/photo/edit','/user/photo/update','/user/info/edit','/user/info/update',
+  '/user/passwd/edit','/user/passwd/update','/user/checkExistence',
+  '/attendance/my/:tag','/attendance/reply/:verb','/charge/my'
+];

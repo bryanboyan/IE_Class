@@ -158,6 +158,8 @@ module.exports = {
     var startAt = req.param('startAt');
     var leng = req.param('leng');
     leng = parseInt(leng);
+    var price = req.param('price');
+    price = parseInt(price);
     var descr= req.param('descr');
     var status = req.param('status');
     status = parseInt(status);
@@ -178,6 +180,7 @@ module.exports = {
 
         klass.name = name;
         klass.leng = leng;
+        klass.price = price;
         klass.startAt = startAt;
         klass.descr= descr;
 
@@ -216,7 +219,7 @@ module.exports = {
     } else {  // create
       // trust the params b/c it will be validated on client side.
       var initStatus = Class.constants.STATUS.INIT;
-      Class.create({name:name, leng:leng, startAt:startAt, descr:descr, status:initStatus}, function(err, newClass) {
+      Class.create({name:name, leng:leng, price:price, startAt:startAt, descr:descr, status:initStatus}, function(err, newClass) {
         if (err) {
           sails.log.error(msgPref+'create class error:'+JSON.stringify(err));
           return res.view('500.ejs');

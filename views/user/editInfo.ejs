@@ -1,13 +1,6 @@
-<h1>User Registration</h1>
+<h1>Edit Info</h1>
 
-<form role="form" id="userForm" action="/user/create" method="post">
-	<input name="code" type="hidden" value="<%= code %>">
-
-	<div class="form-group">
-		<label for="id">ID</label><br>
-		<input id="id" name="id" type="text" value="<%= user.id || '' %>" readonly>
-	</div>
-
+<form role="form" id="userForm" action="/user/info/update" method="post">
 	<div id="name-div" class="form-group has-feedback has-error">
 		<label for="name">Name (Max 20 chars)</label><br>
 		<input id="name" name="name" type="text" value="<%= user.name || '' %>" required>
@@ -19,21 +12,24 @@
 	</script>
 	
 	<div class="form-group">
-		<label for="passwd">Password</label><br>
-		<input id="passwd" name="passwd" type="password" required onchange="form.pwcmp.pattern=this.value">
-	</div>
-
-	<div class="form-group">
-		<label for="pwcmp">Confirm Password</label><br>
-		<input id="pwcmp" name="pwcmp" type="password" 
-			oninvalid="this.setCustomValidity('Please input the same password')" required>
-	</div>	
-	
-	<div class="form-group">
 		<label for="sex">Sex</label><br>
 		Male:		<input id="sex" class="sexSelection" name="sex" type="radio" value="M">&nbsp;
 		Female:	<input id="sex" class="sexSelection" name="sex" type="radio" value="F">
 	</div>
+	
+	<input type="hidden" name="hide-sex" value="<%= user.sex %>" id="hide-sex">
+	<!-- set the user's sex in the radio box -->
+	<script type="text/javascript">
+	var usex = $("#hide-sex").val();
+	if (usex) {
+		$(".sexSelection").each(function() {
+			var s = $(this).val();
+			if (usex == s) {
+				this.checked = true;
+			}
+		});
+	}
+	</script>
 
 	<div class="form-group">
 		<label for="email">Email</label><br>
@@ -47,10 +43,11 @@
 	
 	<div class="form-group">
 		<label for="descr">Description</label><br>
-		<textarea id="descr" name="descr" form="userForm" cols="50" rows="4" required></textarea>
+		<textarea id="descr" name="descr" form="userForm" cols="50" rows="4" required><%= user.descr || 'Nothing special' %></textarea>
 	</div>
 
 	<button type="submit" class="btn btn-primary">Submit</button>
+	<a href="/user/my" class="btn btn-default">Cancel</a>
 </form>
 
 <script type="text/javascript">
@@ -60,12 +57,12 @@ $("#name").change(function(){
 	$.get('/user/checkExistence?'+paramStr, function(data) {
 		var exist = data.exist;
 		if (!exist) {
-			$("#name-span").removeClass("glyphicon-warning-sign");
+			$("#name-span").removeClass("glyphicon-error");
 			$("#name-span").addClass("glyphicon-ok");
 			$("#name-p").hide();
 		} else {
 			$("#name-span").removeClass("glyphicon-ok");
-			$("#name-span").addClass("glyphicon-warning-sign");
+			$("#name-span").addClass("glyphicon-error");
 			$("#name-p").show();
 		}
 	});

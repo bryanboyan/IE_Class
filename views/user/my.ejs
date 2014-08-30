@@ -2,7 +2,7 @@
 
 <!-- <%= user.img %> -->
 <div class="personal-img">
-	<img src="/images/guest.png" alt="No such image">
+	<a href="/user/photo/edit"><img src="<%= photo %>" alt="No such image"></a>
 </div>
 <div class="personal-info row col-md-offset-4">
 	<table class="table-hover">
@@ -32,6 +32,10 @@
 		<tr>
 			<th class="col-md-4">registeredAt</th>
 			<td><div class="china_time"><%- user.createdAt %></div></td>
+		</tr>
+		<tr>
+			<td><a href="/user/info/edit" class="btn btn-default">Change Info</a></td>
+			<td><a href="/user/passwd/edit" class="btn btn-default">Change Password</a></td>
 		</tr>
 	</table>
 </div>

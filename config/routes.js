@@ -49,9 +49,16 @@ module.exports.routes = {
   'get /logout': 'LoginController.logout',
 
   'get /user/retrieveInfo': 'UserController.retrieveInfo',
+  'get /user/checkExistence': 'UserController.checkExistence',
   'get /user/my': 'UserController.my',
-  'get /user/editPhoto': 'UserController.editPhoto',
-  'post /user/updatePhoto': 'UserController.updatePhoto',
+  'get /user/name/search': 'UserController.searchName',
+
+  'get /user/photo/edit': 'UserController.editPhoto',
+  'post /user/photo/update': 'UserController.updatePhoto',
+  'get /user/info/edit': 'UserController.editInfo',
+  'post /user/info/update': 'UserController.updateInfo',
+  'get /user/passwd/edit': 'UserController.editPasswd',
+  'post /user/passwd/update': 'UserController.updatePasswd',
 
   '/class/status/:verb': 'ClassController.status',
   '/class/index/:tag': 'ClassController.index',
