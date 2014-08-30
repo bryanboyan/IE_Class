@@ -7,6 +7,7 @@
 			<th>name</th>
 			<th>startAt</th>
 			<th>length (min)</th>
+			<th>price</th>
 			<th>description</th>
 			<th>status</th>
 			<th>reply</th>
@@ -20,6 +21,7 @@
 			<td><%- c.name %></td>
 			<td><div class="china_time"><%= c.startAt %></div</td>
 			<td><%- c.leng %></td>
+			<td><%- c.price %></td>
 			<td><%- c.descr %></td>
 			<td>
 				<span class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>

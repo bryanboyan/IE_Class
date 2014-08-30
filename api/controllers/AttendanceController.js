@@ -34,7 +34,7 @@ module.exports = {
     tag = tag.toLowerCase();
 
     var query = "select c.id as id, c.name as name, c.startAt as startAt, " +
-                "c.leng as leng, c.descr as descr, c.status as status, a.reply as reply " +
+                "c.leng as leng, c.price as price, c.descr as descr, c.status as status, a.reply as reply " +
                 "from class c,attendance a where c.id=a.classId";
     switch(tag) {
       case "following":
@@ -142,7 +142,7 @@ module.exports = {
           userId: sid,
           userName: name,
           defId: klass.defId,
-          status: Attendance.constants.REPLY.PENDING
+          reply: Attendance.constants.REPLY.PENDING
         });
       }
       sails.log.debug(msgPref + 'records:'+JSON.stringify(records));
@@ -187,23 +187,23 @@ module.exports = {
       }
 
       var eMsg;
-      switch(attendance.status) {
+      switch(attendance.reply) {
         case Attendance.constants.REPLY.PENDING:
           // no problem with this
           break;
         case Attendance.constants.REPLY.OK:
-          // can not change to other status, error
-          eMsg = 'Can not change status from OK to other';
+          // can not change OK reply to other reply, error
+          eMsg = 'Can not change OK reply to other reply';
           break;
         case Attendance.constants.REPLY.REFUSE:
           // can only be changed to OK
           if (reply != Attendance.constants.REPLY.OK) {
-            eMsg = 'Can not change status from Refuse to non-OK status';
+            eMsg = 'Can not change reply from Refuse to non-OK reply';
           }
           break;
       }
       if (eMsg) {
-        sails.log.error(msgPref+'status update logic error:'+eMsg);
+        sails.log.error(msgPref+'reply update logic error:'+eMsg);
         return res.view('403.ejs',{message:eMsg});
       }
 
@@ -253,7 +253,7 @@ module.exports = {
         userId: userId,
         userName: userName,
         defId: klass.defId,
-        status: Attendance.constants.REPLY.PENDING
+        reply: Attendance.constants.REPLY.PENDING
       };
       Attendance.create(record, function(err) {
         if (err) {

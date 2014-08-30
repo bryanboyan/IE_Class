@@ -15,6 +15,7 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var fs = require('fs');
 var crypto = require('crypto');
 var async = require('async');
 
@@ -85,7 +86,7 @@ module.exports = {
   },
 
   profile: function(req, res) {
-    _renderUser(req, res, 'user/my_page');
+    _renderUser(req, res, 'user/my');
   },
 
 //  new: function(req, res) {
@@ -246,8 +247,90 @@ module.exports = {
 //    this._renderUser(req, res, 'user/form');
 //  },
 
-  updatePhoto: function(req, res) {
+  editPhoto: function(req, res) {
+    res.view('user/editPhoto.ejs');
+    var rst = fs.readdirSync('.');
+    sails.log.debug('dir rst:'+JSON.stringify(rst));
+  },
 
+  updatePhoto: function(req, res) {
+    var msgPref = "UserController > updatePhoto: ";
+
+    var photo = req.files.photo;
+    if (!photo || !photo.size || !photo.name) {
+      // error
+      sails.log.error(msgPref+'no photo');
+      return res.view(403,{message:'no photo uploaded'});
+    }
+
+    var ext = photo.name.match(/\.\w+$/);
+    if (!ext) {
+      sails.log.error(msgPref+'ext not match');
+      return res.view(403,{message:'photo format not right'});
+    }
+    ext = ext[0];
+    sails.log.debug('ext: '+ext);
+
+    var uid = req.session.userId;
+    var md5sum = crypto.createHash('md5');
+    var currts_uid_str = Date.now() + "" + uid;   // photo name is md5 of current unixtime+""+userId
+    md5sum.update(currts_uid_str);
+    var imgName = md5sum.digest('hex') + ext;
+
+    var relativePath = __dirname+"/../../assets/images/user/";
+
+    async.waterfall([
+      function(cb) {
+        var filePath = relativePath+imgName;
+        sails.log.debug('filePath: '+filePath);
+        fs.rename(photo.path, filePath, function(err) {
+          if (err) {
+            sails.log.error(msgPref+'photo uploaded err:'+JSON.stringify(err));
+            return cb(500);
+          }
+
+          cb();
+        });
+      },
+      function(cb) {
+        User.findOne(uid, function(err, user) {
+          if (err) {
+            sails.log.error(msgPref+'user findOne error:'+JSON.stringify(err));
+            return cb(500);
+          }
+          if (!user) {
+            sails.log.error(msgPref+'user NA');
+            return cb(404);
+          }
+          cb(null, user);
+        });
+      },
+      function(user, cb) {
+        if (user.photo) {
+          fs.unlink(relativePath+user.photo, function(err) {    // ignore error
+            cb(null, user);
+          });
+        } else {
+          cb(null, user);
+        }
+      },
+      function(user, cb) {
+        sails.log.debug('dump user:'+JSON.stringify(user));
+        user.photo = imgName;
+        user.save(function(err) {
+          if (err) {
+            sails.log.error(msgPref+'save user error:'+JSON.stringify(err));
+            return cb(500);
+          }
+          cb(null);
+        });
+      }
+    ], function(errNo) {
+      if (errNo) {
+        return res.view(errNo+".ejs");
+      }
+      res.redirect('/user/my');
+    });
   },
 
   updateInfo: function(req, res) {
@@ -318,8 +401,12 @@ module.exports = {
         return res.view('500.ejs');
       }
 
-      res.view('user/my_page', {
-        user: user
+      var photoExist = fs.existsSync(__dirname+'/../../assets/images/user/'+user.photo);
+      var photo = photoExist ? '/images/user/'+user.photo : '/images/guest.png';
+
+      res.view('user/my', {
+        user: user,
+        photo: photo
       });
     });
   },

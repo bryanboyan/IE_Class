@@ -18,8 +18,8 @@
 			<td><%- c.amount %></td>
 			<td><div class="china_time"><%- c.timeAt %></div></td>
 			<td>
-				<a href="/charge/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
-				<a href="/charge/destroy?id=<%- c.id %>" class="btn btn-danger">DELETE</a>
+				<a href="/charge/edit/<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="/charge/destroy/<%- c.id %>" class="btn btn-danger">DELETE</a>
 			</td>
 		</tr>
 		<% } %>

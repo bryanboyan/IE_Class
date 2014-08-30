@@ -176,8 +176,6 @@ module.exports = {
           return res.view('404.ejs');
         }
 
-        sails.log.info('======id:'+id+', name:'+name+', startAt:'+JSON.stringify(startAt)+', length:'+leng+', description:'+descr+', status:'+JSON.stringify(status));
-
         klass.name = name;
         klass.leng = leng;
         klass.startAt = startAt;

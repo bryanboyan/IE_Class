@@ -38,11 +38,14 @@ module.exports = {
       required: true
     },
     phone: 'string',
-    credit: {
+    credit: {         // for student only, credit in IE
       type: 'integer',
       defaultsTo: 0,
       required: true
-    }   // for student only, credit in IE
+    },
+    photo: {
+      type: 'string'
+    }
   },
 
   constants: {

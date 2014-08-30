@@ -32,12 +32,12 @@
 					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISHED</a>
 				<% } %>
 				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
-				<a href="/class/edit?id=<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="/class/edit/<%- c.id %>" class="btn btn-default">EDIT</a>
 			</td>
 		</tr>
 		<tr class="students" id="class-<%= c.id %>">
 			<td></td>
-			<td colspan=5>
+			<td colspan=6>
 				<table class="table table-bordered">
 					<thead>
 						<tr>

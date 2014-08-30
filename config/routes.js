@@ -49,6 +49,9 @@ module.exports.routes = {
   'get /logout': 'LoginController.logout',
 
   'get /user/retrieveInfo': 'UserController.retrieveInfo',
+  'get /user/my': 'UserController.my',
+  'get /user/editPhoto': 'UserController.editPhoto',
+  'post /user/updatePhoto': 'UserController.updatePhoto',
 
   '/class/status/:verb': 'ClassController.status',
   '/class/index/:tag': 'ClassController.index',
@@ -59,6 +62,7 @@ module.exports.routes = {
 
   'post /definition/creaupdate': 'DefinitionController.$createOrUpdate',
 
+  'get /charge/my': 'ChargeController.my',
   'post /charge/creaupdate': 'ChargeController.$createOrUpdate',
 
   '/hey': 'DefinitionController.new'
