@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="/styles/my_page.css" type="text/css">
+
+<!-- <%= user.img %> -->
+<div class="personal-img">
+	<img src="<%= photo %>" alt="No such image">
+</div>
+<div class="personal-info row col-md-offset-4">
+	<table class="table-hover">
+		<tr>
+			<th class="col-md-4">NAME</th>
+			<td><%- user.name %></td>
+		</tr>
+		<tr>
+			<th class="col-md-4">SEX</th>
+			<td><%- user.sex %></td>
+		</tr>
+		<tr>
+			<th class="col-md-4">PHONE</th>
+			<td><%- user.phone %></td>
+		</tr>
+		<tr>
+			<th class="col-md-4">MAIL</th>
+			<td><%- user.email %></td>
+		</tr>
+		<tr>
+			<th class="col-md-4">registeredAt</th>
+			<td><div class="china_time"><%- user.createdAt %></div></td>
+		</tr>
+		<tr>
+			<th class="col-md-4">lastLoginAt</th>
+			<td><div class="china_time"><%- user.updatedAt %></div></td>
+		</tr>
+	</table>
+</div>
+<br>
+<div class="personal-desc panel panel-info">
+	<div class="panel-heading">Introduction</div>
+	<div class="panel-body"><%- user.descr %></div>
+</div>

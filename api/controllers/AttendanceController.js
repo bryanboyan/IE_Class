@@ -46,6 +46,7 @@ module.exports = {
     }
 
     query += " and a.userId="+id;
+    query += " order by c.startAt desc";
 
     Attendance.query(query, function(err, classes) {
       if (err) {

@@ -34,7 +34,8 @@ module.exports = {
         break;
     }
 
-    Class.find(query,function(err, classes) {
+    var condition = {where:query, sort:'startAt desc'};
+    Class.find(condition,function(err, classes) {
       if (err) {
         sails.log.error('ClassController > index error:'+err);
         return res.view('500.ejs');

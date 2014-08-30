@@ -6,6 +6,7 @@
 			<th>#</th>
 			<th>name</th>
 			<th>sex</th>
+			<th>credit</th>
 			<th>email</th>
 			<th>phone</th>
 			<th>description</th>
@@ -18,11 +19,12 @@
 			<td><%- u.id %></td>
 			<td><%- u.name %></td>
 			<td><%- u.sex %></td>
+			<td><%- u.credit %></td>
 			<td><%- u.email %></td>
 			<td><%- u.phone %></td>
 			<td><%- u.descr %></td>
 			<td>
-				<a href="/user/profile?id=<%- u.id %>" class="btn btn-default">PROFILE</a>
+				<a href="/user/<%- u.id %>" class="btn btn-default">PROFILE</a>
 				<a href="/user/destroy?id=<%- u.id %>" class="btn btn-danger">DELETE</a>
 			</td>
 		</tr>

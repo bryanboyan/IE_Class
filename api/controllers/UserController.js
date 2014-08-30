@@ -85,8 +85,35 @@ module.exports = {
     });
   },
 
+  /**
+   * view by others
+   * @param req
+   * @param res
+   */
   profile: function(req, res) {
-    _renderUser(req, res, 'user/my');
+    var msgPref = 'UserController > profile: ';
+    sails.log.debug('profil function:');
+
+    var id = req.param('id');
+    if (!isFinite(parseInt(id))) {
+      sails.log.error(msgPref+'id invalid');
+      return res.view('403.ejs');
+    }
+    id = parseInt(id);
+
+    _renderUser(id, res, 'user/profile');
+  },
+
+  my: function(req, res) {
+    var msgPref = 'UserController > my';
+
+    var uid = req.session.userId;
+    if (!uid) {
+      sails.log.error(msgPref + 'no uid in session');
+      return res.view('403.ejs');
+    }
+
+    _renderUser(uid, res, 'user/my')
   },
 
   register: function(req, res) {
@@ -480,31 +507,6 @@ module.exports = {
 
   },
 
-  my: function(req, res) {
-    var msgPref = 'UserController > my';
-
-    var name = req.session.name;
-    if (!name) {
-      sails.log.error(msgPref + 'no name in session');
-      return res.view('403.ejs');
-    }
-
-    User.findOne({name: name}, function(err, user) {
-      if (err) {
-        sails.log.error(msgPref + 'findOne error');
-        return res.view('500.ejs');
-      }
-
-      var photoExist = fs.existsSync(__dirname+'/../../assets/images/user/'+user.photo);
-      var photo = photoExist ? '/images/user/'+user.photo : '/images/guest.png';
-
-      res.view('user/my', {
-        user: user,
-        photo: photo
-      });
-    });
-  },
-
   /**
    * Overrides for the settings in `config/controllers.js`
    * (specific to UserController)
@@ -516,23 +518,15 @@ module.exports = {
 
 /**
  * render found user with the page
- * @param req
+ * @param uid
  * @param res
  * @param page
  * @private
  */
-function _renderUser (req, res, page) {
+function _renderUser (uid, res, page) {
   var msgPref = 'UserController > _getUserOrThrow, page='+page+': ';
-  var id = req.param('id');
-  if (!isFinite(parseInt(id))) {
-    sails.log.error(msgPref+'id invalid');
-    return res.view('403.ejs');
-  }
-  id = parseInt(id);
-  var uid = req.session.userId;
-  var myself = (uid == id);
 
-  User.findOne({id:id}, function(err, user) {
+  User.findOne(uid, function(err, user) {
     if (err) {
       sails.log.error(msgPref+'findOne user err:'+JSON.stringify(err));
       return res.view('500.ejs');
@@ -543,6 +537,12 @@ function _renderUser (req, res, page) {
       return res.view('404.ejs');
     }
 
-    res.view(page, {user: user, myself: myself});
+    var photoExist = fs.existsSync(__dirname+'/../../assets/images/user/'+user.photo);
+    var photo = photoExist ? '/images/user/'+user.photo : '/images/guest.png';
+
+    res.view(page, {
+      user: user,
+      photo: photo
+    });
   });
 }

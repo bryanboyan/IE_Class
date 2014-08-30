@@ -23,7 +23,6 @@ module.exports = {
   	var name = req.session.name;
 
     // 根据isTeacher来判断返回什么界面.
-    // FIXME 这个地方需要redirect
     if (req.session.isTeacher) {
       sails.log.info('index, is teacher, go to index');
       return res.view('home/index', {
@@ -65,6 +64,7 @@ module.exports = {
     User.findOne({name: username}).done(function(err, user) {
       if (err) {
         sails.log.error(msgPref+'find user error');
+        res.view('500.ejs');
       }
 
       if (!user) {
@@ -78,7 +78,7 @@ module.exports = {
       var stored_pw = user.passwd;
       if (encoded_pw !== stored_pw) {
 
-        sails.log.error('LoginController > doLogin : password wrong, encoded_pw:'+encoded_pw+', stored_pw:'+stored_pw);
+        sails.log.error(msgPref+'password wrong, encoded_pw:'+encoded_pw+', stored_pw:'+stored_pw);
         // password wrong
         return res.view('user/login', {
           err: "username or password wrong",
@@ -96,7 +96,15 @@ module.exports = {
       res.cookie('isTeacher', isTeacher); // set it into cookie.
       res.cookie('userName', username);
 
-      res.redirect('/');
+      // update user updatedAt time at login.
+      user.updatedAt = new Date();
+      user.save(function(err) {
+        if (err) {
+          sails.log.error(msgPref + 'user updatedAt save problem:'+JSON.stringify(err));
+          return res.view('500.ejs');
+        }
+        res.redirect('/');
+      });
     });
   },
 
