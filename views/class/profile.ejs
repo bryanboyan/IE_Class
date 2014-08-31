@@ -44,8 +44,8 @@
 	<tbody>
 		<% for (var i=0; i<attendances.length; ++i) { var a=attendances[i]; %>
 			<tr>
-				<td><a href='/user/<%= a.userId %>'><%= a.userId %></a></td>
-				<td><a href='/user/<%= a.userId %>'><%= a.userName %></a></td>
+				<td><a href='/user/prof/<%= a.userId %>'><%= a.userId %></a></td>
+				<td><a href='/user/prof/<%= a.userId %>'><%= a.userName %></a></td>
 				<td>
 					<span class="classReply" value="<%= a.reply %>">
 						<%= Attendance.constants.REPLY_NUM[a.reply] %>

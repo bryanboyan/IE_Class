@@ -17,8 +17,8 @@
 	<tbody>
 		<% for (var i=0; i<classes.length; ++i) { var c = classes[i]; %>
 		<tr>
-			<td><a href="/class/<%= c.id %>"><%- c.id %></a></td>
-			<td><a href="/class/<%= c.id %>"><%- c.name %></a></td>
+			<td><a href="/class/prof/<%= c.id %>"><%- c.id %></a></td>
+			<td><a href="/class/prof/<%= c.id %>"><%- c.name %></a></td>
 			<td><div class="china_time"><%= c.startAt %></div</td>
 			<td><%- c.leng %></td>
 			<td><%- c.price %></td>
@@ -30,7 +30,7 @@
 				<span class="classReply" value="<%= c.reply %>"><%= Attendance.constants.REPLY_NUM[c.reply] %></span>
 			</td>
 			<td>
-				<a href="/class/<%=c.id%>" class="btn btn-info">Profile</a>
+				<a href="/class/prof/<%=c.id%>" class="btn btn-info">Profile</a>
 				<% if (c.reply==Attendance.constants.REPLY.PENDING) { %>
 					<a href="/attendance/reply/ok?classId=<%=c.id%>" class="btn btn-primary">Attend</a>
 					<a href="/attendance/reply/refuse?classId=<%=c.id%>" class="btn btn-danger">Refuse</a>

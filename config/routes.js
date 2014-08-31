@@ -51,7 +51,7 @@ module.exports.routes = {
   'get /user/retrieveInfo': 'UserController.retrieveInfo',
   'get /user/checkExistence': 'UserController.checkExistence',
   'get /user/my': 'UserController.my',
-  'get /user/:id': 'UserController.profile',
+  'get /user/prof/:id': 'UserController.profile',
   'get /user/name/search': 'UserController.searchName',
 
   'get /user/photo/edit': 'UserController.editPhoto',
@@ -61,7 +61,10 @@ module.exports.routes = {
   'get /user/passwd/edit': 'UserController.editPasswd',
   'post /user/passwd/update': 'UserController.updatePasswd',
 
-  'get /class/:id': 'ClassController.profile',
+  'get /class/new': "ClassController.new",
+  'get /class/edit': "ClassController.edit",
+  '/class/destroy/:id': 'ClassController.destroy',
+  'get /class/prof/:id': 'ClassController.profile',
   '/class/status/:verb': 'ClassController.status',
   '/class/index/:tag': 'ClassController.index',
   'post /class/creaupdate': 'ClassController.$createOrUpdate',

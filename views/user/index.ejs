@@ -16,15 +16,15 @@
 	<tbody>
 		<% for (var i=0; i<users.length; ++i) { var u = users[i]; %>
 		<tr>
-			<td><a href="/user/<%= u.id %>"><%- u.id %></a></td>
-			<td><a href="/user/<%= u.id %>"><%- u.name %></a></td>
+			<td><a href="/user/prof/<%= u.id %>"><%- u.id %></a></td>
+			<td><a href="/user/prof/<%= u.id %>"><%- u.name %></a></td>
 			<td><%- u.sex %></td>
 			<td><%- u.credit %></td>
 			<td><%- u.email %></td>
 			<td><%- u.phone %></td>
 			<td><%- u.descr %></td>
 			<td>
-				<a href="/user/<%- u.id %>" class="btn btn-default">PROFILE</a>
+				<a href="/user/prof/<%- u.id %>" class="btn btn-default">PROFILE</a>
 				<a href="/user/destroy?id=<%- u.id %>" class="btn btn-danger">DELETE</a>
 			</td>
 		</tr>

@@ -33,7 +33,7 @@
 				<% } else if (c.status == Class.constants.STATUS.CONFIRM) {%>
 					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISHED</a>
 				<% } %>
-				<a href="/class/<%=c.id%>" class="btn btn-info">Profile</a>
+				<a href="/class/prof/<%=c.id%>" class="btn btn-info">Profile</a>
 				<a href="/class/edit/<%- c.id %>" class="btn btn-default">EDIT</a>
 				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
 			</td>
