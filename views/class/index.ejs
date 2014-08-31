@@ -23,7 +23,9 @@
 			<td><%- c.price %></td>
 			<td><%- c.descr %></td>
 			<td>
-				<span id="classStatus-<%- c.id %>" class="classStatus" value="<%= c.status %>"><%= Class.constants.STAT_NUM[c.status] %></span>
+				<span id="classStatus-<%- c.id %>" class="classStatus" value="<%= c.status %>">
+					<%= Class.constants.STAT_NUM[c.status] %>
+				</span>
 			</td>
 			<td>
 				<% if (c.status == Class.constants.STATUS.INIT) { %>
@@ -31,8 +33,9 @@
 				<% } else if (c.status == Class.constants.STATUS.CONFIRM) {%>
 					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISHED</a>
 				<% } %>
-				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
+				<a href="/class/<%=c.id%>" class="btn btn-info">Profile</a>
 				<a href="/class/edit/<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
 			</td>
 		</tr>
 		<tr class="students" id="class-<%= c.id %>">
@@ -94,8 +97,8 @@
 					var r = attendances[i];
 					html += 
 						"<tr>"+
-						"<td class='studentLink'>"+r.userId+"</td>"+
-						"<td class='studentLink'>"+r.userName+"</td>"+
+						"<td><a href='/user/"+r.userId+"'>"+r.userId+"</a></td>"+
+						"<td><a href='/user/"+r.userId+"'>"+r.userName+"</a></td>"+
 						"<td><span class='classReply' value="+r.reply+">"+
 							attendanceConst.REPLY_NUM[r.reply]+"</span></td>"+
 						"</tr>";

@@ -39,5 +39,5 @@ var studentPath = [
   '/','/user/my','/user/:id',
   '/user/photo/edit','/user/photo/update','/user/info/edit','/user/info/update',
   '/user/passwd/edit','/user/passwd/update','/user/checkExistence',
-  '/attendance/my/:tag','/attendance/reply/:verb','/charge/my'
+  '/attendance/my/:tag','/attendance/reply/:verb','/charge/my','/class/:id'
 ];

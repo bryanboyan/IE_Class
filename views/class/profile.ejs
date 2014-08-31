@@ -1,0 +1,57 @@
+<h1>Class Profile</h1>
+
+<table class="table-hover" style="font-size: 1.3em">
+	<tr>
+		<th class="col-md-4">Class Name</th>
+		<td><%- klass.name %></td>
+	</tr>
+	<tr>
+		<th class="col-md-4">StartAt</th>
+		<td><div class="china_time"><%- klass.startAt %></div></td>
+	</tr>
+	<tr>
+		<th class="col-md-4">Length (minutes)</th>
+		<td><%- klass.leng %></td>
+	</tr>
+	<tr>
+		<th class="col-md-4">Price</th>
+		<td><%- klass.price %></td>
+	</tr>
+	<tr>
+		<th class="col-md-4">Status</th>
+		<td>
+			<span id="classStatus-<%- klass.id %>" class="classStatus" value="<%= klass.status %>">
+				<%= Class.constants.STAT_NUM[klass.status] %>
+			</span>
+		</td>
+	</tr>
+</table>
+<br>
+<div class="panel panel-info" style="font-size: 1.3em">
+	<div class="panel-heading">Description</div>
+	<div class="panel-body"><%- klass.descr %></div>
+</div>
+
+<h2>Students</h2>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Reply</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i=0; i<attendances.length; ++i) { var a=attendances[i]; %>
+			<tr>
+				<td><a href='/user/<%= a.userId %>'><%= a.userId %></a></td>
+				<td><a href='/user/<%= a.userId %>'><%= a.userName %></a></td>
+				<td>
+					<span class="classReply" value="<%= a.reply %>">
+						<%= Attendance.constants.REPLY_NUM[a.reply] %>
+					</span>
+				</td>
+			</tr>
+		<% } %>
+	</tbody>
+</table>

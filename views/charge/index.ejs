@@ -13,8 +13,8 @@
 	<tbody>
 		<% for (var i=0; i<chargeList.length; ++i) { var c = chargeList[i]; %>
 		<tr>
-			<td><%- c.userId %></td>
-			<td><%= c.userName %></td>
+			<td><a href="/user/<%= c.userId %>"><%- c.userId %></a></td>
+			<td><a href="/user/<%= c.userId %>"><%= c.userName %></a></td>
 			<td><%- c.amount %></td>
 			<td><div class="china_time"><%- c.timeAt %></div></td>
 			<td>

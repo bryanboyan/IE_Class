@@ -45,6 +45,35 @@ module.exports = {
     });
   },
 
+  profile: function(req, res) {
+    var msgPref = 'ClassController > profile: ';
+    var id = req.param('id');
+    id = parseInt(id);
+
+    Class.findOne(id, function(err, klass) {
+      if (err) {
+        sails.log.error(msgPref+'findOne class error:'+err);
+        return res.view('500.ejs');
+      }
+
+      if (!klass) {
+        sails.log.error(msgPref+'find no class');
+        return res.view('404.ejs');
+      }
+
+      Attendance.find({classId:klass.id}, function(err, attendances) {
+        if (err) {
+          sails.log.error(msgPref+'find attendances error:'+err);
+          return res.view('500.ejs');
+        }
+
+        attendances = attendances || [];
+
+        res.view('class/profile', {klass: klass,  attendances: attendances});
+      });
+    });
+  },
+
   new: function(req, res) {
     var msgPref = 'ClassController > $new: ';
     var defId = req.param('defId');
