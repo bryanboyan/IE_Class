@@ -45,12 +45,16 @@ module.exports = {
 
   $createOrUpdate: function(req, res) {
     var id = req.param('id');
+    id = parseInt(id);
     var name = req.param('name');
     var leng = req.param('leng');
+    leng = parseInt(leng);
+    var price = req.param('price');
+    price = parseInt(price);
     var cond = req.param('cond');
     var descr= req.param('descr');
 
-    if (id) { // update
+    if (isFinite(id)) { // update
       Definition.findOne({id: id}, function(err, definition) {
         if (err) {
 
@@ -58,6 +62,7 @@ module.exports = {
 
         definition.name = name;
         definition.leng = leng;
+        definition.price= price;
         definition.cond = cond;
         definition.descr= descr;
 
@@ -72,7 +77,7 @@ module.exports = {
 
     } else {  // create
       // trust the params b/c it will be validated on client side.
-      Definition.create({name:name, leng:leng, cond:cond, descr:descr}, function(err) {
+      Definition.create({name:name, leng:leng, price:price, cond:cond, descr:descr}, function(err) {
         if (err) {
 
         }
