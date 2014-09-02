@@ -36,7 +36,6 @@ $(".userInfo").change(function(){
 		var user = data.user;
 
 		if (user) {
-			console.log('user retrieved: ',JSON.stringify(user),' Now going to update information');
 			$("#userId").val(user.id);
 			$("#userName").val(user.name);
 		} else {

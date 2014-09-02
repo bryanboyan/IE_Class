@@ -365,7 +365,9 @@ module.exports = {
       if (errNo) {
         return res.view(errNo+".ejs");
       }
-      res.redirect('/user/my');
+      setTimeout(function() {
+        res.redirect('/user/my');
+      }, 3000);
     });
   },
 

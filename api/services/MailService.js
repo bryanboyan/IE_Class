@@ -4,19 +4,17 @@
 'use strict';
 
 var nodemailer = require('nodemailer');
-var transport = nodemailer.createTransport("SMTP", {
-//  host: "smtp.gmail.com", // hostname
-//  secureConnection: true, // use SSL
-//  port: 465, // port for secure SMTP
-  service: "Gmail",
-  auth: {
-    user: "edwinboyan@gmail.com",
-    pass: "edwin!@168boyan"
-  }
-});
 var fromMailer = "IE Team No Reply<noreply@ie.com>";
 
 module.exports = {
+  getTransport: function() {
+    if (this._transport) {
+      return this._transport;
+    }
+    var conf = sails.config.mailTransport;
+    this._transport = nodemailer.createTransport("SMTP", conf);
+    return this._transport;
+  },
   getServiceHome: function() {
     return sails.config.outbound.host + ":" + sails.config.outbound.port;
   },
@@ -34,6 +32,7 @@ module.exports = {
       "Anyway, please use this url to complete your registration:"+url+". " +
       "Please don't reply this mail.";
 
+    var transport = this.getTransport();
     transport.sendMail({
       from: fromMailer,
       to: targetMailer,
