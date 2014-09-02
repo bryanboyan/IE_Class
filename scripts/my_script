@@ -41,9 +41,10 @@ expect fork
 # env MIN_UPTIME="5000"
 # env SPIN_SLEEP_TIME="2000"
  
-env NODE_BIN_DIR="/home/ec2-user/.nvm/v0.10.31/lib/node_modules/"
-env NODE_PATH="/bin/node"
+env NODE_BIN_DIR="/bin/node"
+env NODE_PATH="/home/ec2-user/.nvm/v0.10.31/lib/node_modules/"
 env APPLICATION_PATH="/home/ec2-user/git/ie_class"
+env APPLICATION_FILE="app.js"
 env PIDFILE="/var/run/ie_class.pid"
 env LOG="/var/log/ie_class.log"
 env MIN_UPTIME="5000"
@@ -59,13 +60,14 @@ script
     # someone makes an error in application initialization code, or bringing
     # down production servers the same way if a database or other critical
     # service suddenly becomes inaccessible.
+		cd $APPLICATION_PATH && \
     exec forever \
       --pidFile $PIDFILE \
       -a \
       -l $LOG \
       --minUptime $MIN_UPTIME \
       --spinSleepTime $SPIN_SLEEP_TIME \
-      start $APPLICATION_PATH
+      start $APPLICATION_FILE
 end script
  
 pre-stop script
@@ -76,5 +78,6 @@ pre-stop script
     # its data. Note that doing it this way means that each application that
     # runs under Forever must have a different start file name, regardless of
     # which directory it is in.
-    exec forever stop $APPLICATION_PATH
+		cd $APPLICATION_PATH && \
+    exec forever stop $APPLICATION_FILE
 end script
