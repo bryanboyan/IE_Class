@@ -15,8 +15,6 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
-var async = require('async');
-
 module.exports = {
 
   index: function(req, res) {

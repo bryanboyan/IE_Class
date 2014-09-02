@@ -17,7 +17,6 @@
 
 var fs = require('fs');
 var crypto = require('crypto');
-var async = require('async');
 
 module.exports = {
 
