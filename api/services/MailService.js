@@ -14,12 +14,12 @@ var transport = nodemailer.createTransport("SMTP", {
     pass: "edwin!@168boyan"
   }
 });
-var host = "http://localhost:1337";
+var serviceHome = sails.config.host + ':' + sails.config.port;
 var fromMailer = "IE Team No Reply<noreply@ie.com>";
 
 module.exports = {
   sendRegisterMail: function(targetMailer, code, cb) {
-    var url = host+'/user/register'+"?c="+code;
+    var url = serviceHome+'/user/register'+"?c="+code;
 
     var html = "<h1>Welcome to IE Home</h1>" +
       "<p>Please click URL below to complete your registration</p><br>" +
