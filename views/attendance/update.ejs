@@ -32,7 +32,7 @@
 		$.get('/attendance/classmates?classId='+classId, function(data) {
 			var attendances = data.attendances;
 			console.log('attendances: '+JSON.stringify(attendances));
-			$("#studentsForm").tokenInput("/user/name/search", {
+			$("#studentsForm").tokenInput("/user/search", {
 				theme: "facebook",
 				preventDuplicates: true,
 				prePopulate: attendances,

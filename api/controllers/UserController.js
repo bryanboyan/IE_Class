@@ -35,10 +35,26 @@ module.exports = {
     });
   },
 
-  searchName: function(req, res) {
-    var name = req.param('q');
-    sails.log.debug('name is '+name);
-    var cond = {name: {'like':name}};
+  search: function(req, res) {
+    var msgPref = 'UserController > search: ';
+    var q = req.param('q');
+    if (!q) {
+      sails.log.error(msgPref+'no query provided');
+      return res.json(403);
+    }
+
+    var cond = {};
+    if (isFinite(q)) {  // if q is only numbers, maybe it's id search.
+      cond = {
+        or: [
+          {id: parseInt(q)},
+          {name: {'like': q}}
+        ]
+      }
+    } else {
+      cond = {name: {'like': q}};
+    }
+
     User.find(cond, function(err, users) {
       if (err) {
         sails.log.error('UserController > searchName: user find error:'+JSON.stringify(err));

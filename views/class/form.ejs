@@ -48,15 +48,12 @@
 	</div>
 
 	<% if (klass.id) { %>
-		<table class="table">
-			<tr>
-				<td><button type="submit" class="btn btn-primary">Update Class</button></td>
-				<td><a href="/class/destroy?id=<%- klass.id %>" class="btn btn-danger">DELETE</a></td>
-			</tr>
-		</table>
+		<button type="submit" class="btn btn-primary">Update Class</button>
+		<a href="/class/destroy?id=<%- klass.id %>" class="btn btn-danger">DELETE</a>
 	<% } else { %>
 		<button type="submit" class="btn btn-primary">Confirm and Choose Students</button>
 	<% } %>
+	<a href="/class" class="btn btn-default">CANCEL</a>
 </form>
 
 <script type="text/javascript">

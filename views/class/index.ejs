@@ -16,12 +16,12 @@
 	<tbody>
 		<% for (var i=0; i<classes.length; ++i) { var c = classes[i]; %>
 		<tr>
-			<td><%- c.id %></td>
-			<td><%- c.name %></td>
+			<td><a href="/class/prof/<%=c.id%>"><%- c.id %></a></td>
+			<td><a href="/class/prof/<%=c.id%>"><%- c.name %></a></td>
 			<td><div class="china_time"><%= c.startAt %></div</td>
 			<td><%- c.leng %></td>
 			<td><%- c.price %></td>
-			<td><%- c.descr %></td>
+			<td width="350px"><%- c.descr %></td>
 			<td>
 				<span id="classStatus-<%- c.id %>" class="classStatus" value="<%= c.status %>">
 					<%= Class.constants.STAT_NUM[c.status] %>
@@ -31,10 +31,9 @@
 				<% if (c.status == Class.constants.STATUS.INIT) { %>
 					<a href="/class/status/open?id=<%- c.id %>" class="btn btn-primary">OPEN</a>
 				<% } else if (c.status == Class.constants.STATUS.CONFIRM) {%>
-					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISHED</a>
+					<a href="/class/status/finished?id=<%- c.id %>" class="btn btn-success">FINISH</a>
 				<% } %>
-				<a href="/class/prof/<%=c.id%>" class="btn btn-info">Profile</a>
-				<a href="/class/edit/<%- c.id %>" class="btn btn-default">EDIT</a>
+				<a href="/class/edit/<%- c.id %>" class="btn btn-primary">EDIT</a>
 				<a href="#class-<%= c.id %>" id="<%=i%>" class="showStudents btn btn-info">STUDENTS</a>
 			</td>
 		</tr>

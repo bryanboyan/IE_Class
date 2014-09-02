@@ -4,18 +4,49 @@
 <link rel="stylesheet" type="text/css" href="/styles/jquery.datetimepicker.css">
 <script src="/js/jquery.datetimepicker.js"></script>
 
+<!-- below tokenInput -->
+<link rel="stylesheet" href="/styles/token-input.css" type="text/css">
+<link rel="stylesheet" href="/styles/token-input-facebook.css" type="text/css">
+<script src="/js/jquery.tokeninput.js"></script>
+
 <form role="form" id="chargeForm" action="/charge/creaupdate" method="post">
 	<% if (charge.id) { %>
 		<input name="id" type="hidden" value="<%= charge.id %>">
 	<% } %>
-	<div class="form-group">
-		<label for="userId">student ID</label><br>
-		<input id="userId" class="userInfo" name="userId" type="text" value="<%= charge.userId || '' %>" required>
+	
+	<input type="hidden" name="userId" value="<%= charge.userId || '' %>" id="userId">
+	<input type="hidden" name="userName" value="<%= charge.userName || '' %>" id="userName">
+	
+	<div class="form-group" id="userName-div">
+		<label for="studentForm">Student ID or Name</label><br>
+		<input id="studentForm" name="studentForm" type="text" required/>
+		<p id="studentEmpty" class="bg-danger">Please input student.</p>
+		<script type="text/javascript">
+		$("#studentEmpty").hide();
+    $(document).ready(function() {
+			$("#studentForm").tokenInput("/user/search", {
+				theme: "facebook",
+				preventDuplicates: true,
+				tokenLimit: 1,
+				onAdd: function(item) {
+					console.log('added item: '+JSON.stringify(item));
+
+					$("#userName").val(item.name);
+					$("#userId").val(item.id);
+				},
+				onDelete: function(item) {
+					console.log('deleted item: '+JSON.stringify(item));
+					$("#userName").val("");
+					$("#userId").val("");
+				}
+			});
+    });
+		</script>
 	</div>
-	<div class="form-group">
-		<label for="userName">student Name</label><br>
-		<input id="userName" class="userInfo" name="userName" type="text" value="<%= charge.userName || '' %>" required>
-	</div>
+	<style type="text/css" media="screen">
+	$("#userName-div").hide();
+	</style>
+	
 	<div class="form-group">
 		<label for="amount">Amount</label><br>
 		<input id="amount" name="amount" type="number" value="<%= charge.amount || '' %>" required>
@@ -28,24 +59,9 @@
 </form>
 
 <script type="text/javascript">
-$(".userInfo").change(function(){
-	var key = this.id;
-	var value = $(this).val();
-	var paramStr = "key="+key+"&value="+value;
-	$.get('/user/retrieveInfo?'+paramStr, function(data) {
-		var user = data.user;
 
-		if (user) {
-			$("#userId").val(user.id);
-			$("#userName").val(user.name);
-		} else {
-			console.log('error happened: ',JSON.stringify(data));
-		}
-
-	}).fail(function(err) {
-		//TODO	ALERT user not found error
-		console.log('FAIL happened: ',JSON.stringify(arguments));
-	});
+$(":submit").click(function() {
+	
 });
 
 // change format of timeAt datetime

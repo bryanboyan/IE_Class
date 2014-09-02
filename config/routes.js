@@ -52,7 +52,8 @@ module.exports.routes = {
   'get /user/checkExistence': 'UserController.checkExistence',
   'get /user/my': 'UserController.my',
   'get /user/prof/:id': 'UserController.profile',
-  'get /user/name/search': 'UserController.searchName',
+  'get /user/search': 'UserController.search',
+  'get /user': 'UserController.index',
 
   'get /user/photo/edit': 'UserController.editPhoto',
   'post /user/photo/update': 'UserController.updatePhoto',
