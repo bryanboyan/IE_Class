@@ -17,8 +17,11 @@ var transport = nodemailer.createTransport("SMTP", {
 var fromMailer = "IE Team No Reply<noreply@ie.com>";
 
 module.exports = {
+  getServiceHome: function() {
+    return sails.config.outbound.host + ":" + sails.config.outbound.port;
+  },
   sendRegisterMail: function(targetMailer, code, cb) {
-    var serviceHome = 'http://' + sails.config.host + ':' + sails.config.port;
+    var serviceHome = this.getServiceHome();
     var url = serviceHome+'/user/register'+"?c="+code;
 
     var html = "<h1>Welcome to IE Home</h1>" +

@@ -4,14 +4,14 @@
 }
 .personal-img img {
 /*	width: 300px;*/
-	height: 200px;
+	height: 300px;
 }
 
 .personal-info {
 /*	float: left;*/
 /*	position: relative;*/
 	margin-top: 10px;
-	margin-left: 300px;
+	margin-left: 350px;
 }
 .personal-info table {
 	font-size: 1.5em;
